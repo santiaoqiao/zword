@@ -1,0 +1,5 @@
+package box
+
+func Pack() {
+
+}
