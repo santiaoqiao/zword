@@ -10,39 +10,79 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	packageRels "santiaoqiao.com/zdocx/types/rels"
+	"santiaoqiao.com/zdocx/entity"
+	"santiaoqiao.com/zdocx/entity/docprops"
+	packageRels "santiaoqiao.com/zdocx/entity/rels"
 )
 
-func Unpack(src string, dest string) (interface{}, error) {
-	var filenames []string
+func Unpack(src string, dest string) (*entity.Docx, error) {
+	// 定义一个 Docx, 最终返回其地址
+	docx_ptr := &entity.Docx{}
 
+	// 使用zip解压缩docx文档
 	r, err := zip.OpenReader(src)
 	if err != nil {
-		return filenames, err
+		return nil, err
 	}
 	defer r.Close()
-
 	// 第一步：读取_rels/.rels
-	f := getFileByName(r.File, "_rels/.rels")
+	packageRels_ptr := &packageRels.Relationships{}
+	readPartFromZipFile(r, "_rels/.rels", packageRels_ptr)
+	log.Debug("完成读取_rels/.rels")
+	docx_ptr.PackageRels = packageRels_ptr
+	// 第二步；根据_rels/.rels中的描述，分别读取extend(app.xml),core,custom
+	for index := range packageRels_ptr.Children {
+		typeNmae := packageRels_ptr.Children[index].Type
+		target := packageRels_ptr.Children[index].Target
+		// 1- 如果存在extended-properties，则读取
+		if strings.HasSuffix(typeNmae, "extended-properties") {
+			extendProperties_ptr := &docprops.ExtendedProperties{}
+			readPartFromZipFile(r, target, extendProperties_ptr)
+			log.Debug("完成读取extended-properties")
+		}
+		// 2- 如果存在core-properties，则读取
+		if strings.HasSuffix(typeNmae, "core-properties") {
+			coreProperties_ptr := &docprops.CoreProperties{}
+			err := readPartFromZipFile(r, target, coreProperties_ptr)
+			if err != nil {
+				log.Error(err.Error())
+			}
+			log.Debug("完成读取core-properties")
+		}
+		// 3- 如果存在custom-properties，则读取
+		if strings.HasSuffix(typeNmae, "custom-properties") {
+			customProperties_ptr := &docprops.CustomProperties{}
+			err := readPartFromZipFile(r, target, customProperties_ptr)
+			if err != nil {
+				log.Error(err.Error())
+			}
+			log.Debug("完成读取_custom-properties")
+		}
+	}
+	// 第三步：读取
+
+	return docx_ptr, nil
+}
+
+func readPartFromZipFile(r *zip.ReadCloser, path string, ptr interface{}) error {
+	f := getFileByName(r.File, path)
 	if f == nil {
-		return nil, fmt.Errorf("can't find file _rels/.rels")
+		return fmt.Errorf("can't find file _rels/.rels")
 	}
 	// 解析 _rels/.rels
 	freader, err := f.Open()
 	if err != nil {
-		return nil, fmt.Errorf("error in opening file _rels/.rels")
+		return fmt.Errorf("error in opening file _rels/.rels")
 	}
 	data, err := io.ReadAll(freader)
 	if err != nil {
-		return nil, fmt.Errorf("error reading file _rels/.rels")
+		return fmt.Errorf("error reading file _rels/.rels")
 	}
-	packageRelationships_ptr := &packageRels.Relationships{}
-	err = xml.Unmarshal(data, packageRelationships_ptr)
+	err = xml.Unmarshal(data, ptr)
 	if err != nil {
-		return nil, fmt.Errorf("error parse file _rels/.rels")
+		return fmt.Errorf("error parse file _rels/.rels")
 	}
-	log.WithField("_rels/.rels", *packageRelationships_ptr).Debug("完成读取_rels/.rels")
-	return nil, nil
+	return nil
 }
 
 func Unpack2(src string, dest string) ([]string, error) {
@@ -98,14 +138,4 @@ func Unpack2(src string, dest string) ([]string, error) {
 		}
 	}
 	return filenames, nil
-}
-
-// 根据文件名获取一个zip.File
-func getFileByName(files []*zip.File, filename string) *zip.File {
-	for _, f := range files {
-		if f.Name == filename {
-			return f
-		}
-	}
-	return nil
 }

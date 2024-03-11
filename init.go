@@ -6,7 +6,7 @@ import (
 
 func init() {
 	log.SetFormatter(&log.TextFormatter{
-		ForceColors:  true,
+		// ForceColors:  true,
 		PadLevelText: true,
 	})
 	log.SetLevel(log.DebugLevel)
