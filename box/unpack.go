@@ -10,14 +10,14 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"santiaoqiao.com/zdocx/entity"
-	"santiaoqiao.com/zdocx/entity/docprops"
-	packageRels "santiaoqiao.com/zdocx/entity/rels"
+	"santiaoqiao.com/zoffice/zdocx"
+	"santiaoqiao.com/zoffice/zdocx/docprops"
+	packageRels "santiaoqiao.com/zoffice/zdocx/rels"
 )
 
-func Unpack(src string, dest string) (*entity.Docx, error) {
+func Unpack(src string, dest string) (*zdocx.Docx, error) {
 	// 定义一个 Docx, 最终返回其地址
-	docx_ptr := &entity.Docx{}
+	docx_ptr := &zdocx.Docx{}
 
 	// 使用zip解压缩docx文档
 	r, err := zip.OpenReader(src)

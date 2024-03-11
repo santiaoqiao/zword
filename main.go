@@ -1,11 +1,13 @@
 package main
 
 import (
-	"santiaoqiao.com/zdocx/box"
+	"fmt"
+
+	"santiaoqiao.com/zoffice/zpackage"
 )
 
 func main() {
-	_, err := box.Unpack("./tmp/官僚资本主义.docx", "./tmp/unpack")
+	ret, err := zpackage.Unpack("./tmp/官僚资本主义.docx")
 	if err != nil {
 		println(err.Error())
 	}
@@ -14,4 +16,8 @@ func main() {
 	// 	fmt.Println(r)
 	// }
 	// box.Unpack2("./tmp/官僚资本主义.docx", "./tmp/unpack")
+	for k, v := range ret {
+		fmt.Println(k, *v)
+	}
+
 }
