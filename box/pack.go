@@ -1,5 +1,0 @@
-package box
-
-func Pack() {
-
-}

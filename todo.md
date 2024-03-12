@@ -1,7 +1,11 @@
 ### 最终使用
 ``` golang
 var document Document
-document = zdocx.read("xxx.docx")
+document = zoffice.zdocx.Document
+document.read("xxx.docx")
+var paragraphs []Paragraph = document.paragraphs
+
+var 
 // ...
 ```
 
@@ -11,3 +15,8 @@ document = zdocx.read("xxx.docx")
     - `box.unpack`
 
 2. 解析xml，变成一个个对象 `parse`
+
+DocxUnpack->
+{
+   
+}
