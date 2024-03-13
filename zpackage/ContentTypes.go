@@ -1,4 +1,4 @@
-package zdocx
+package zpackage
 
 type ContentTypes struct {
 	DefaultItems []ContentTypesDefaultItem  `xml:"Default"`

@@ -2,27 +2,26 @@ package main
 
 import (
 	"fmt"
-	"santiaoqiao.com/zoffice/zdocx"
-
-	"santiaoqiao.com/zoffice/zpackage"
 )
 
 func main() {
-	ret, err := zpackage.DocxUnpack("./tmp/官僚资本主义.docx")
+	docx := &Docx{}
+	err := docx.Read("./tmp/官僚资本主义.docx")
 	if err != nil {
-		println(err.Error())
+		fmt.Println(err.Error())
+		return
 	}
-	file, ok := ret["[Content_Types].xml"]
-	if ok {
-		v := &zdocx.ContentTypes{}
-		err := zpackage.UnmarshalFile(file, v)
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-		fmt.Println(*v)
-	}
-	for k := range ret {
+
+	for _, k := range docx.ContentTypes.DefaultItems {
 		fmt.Println(k)
 	}
+
+	for _, k := range docx.ContentTypes.OverrideItem {
+		fmt.Println(k)
+	}
+
+	for _, p := range docx.Document.Body.Children {
+		fmt.Println(p)
+	}
+	//fmt.Println(*docx)
 }

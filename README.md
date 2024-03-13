@@ -1,2 +1,14 @@
 # zoffice
-learning parsing word documents to achieve reading and writing of word
+```go
+package main
+
+import (
+"santiaoqiao.com/zoffice/zdocx"
+)
+
+func main()  {
+	var document *Docx = &zdocx.Document{}
+	document.Read("xxx.docx")
+	document
+}
+```
