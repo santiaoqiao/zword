@@ -1,5 +1,74 @@
 package document
 
+import (
+	"encoding/xml"
+	"fmt"
+	"io"
+	"strings"
+)
+
+//type Paragraph struct {
+//	Children []Run `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main r"`
+//}
+
 type Paragraph struct {
-	Children []Run `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main r"`
+	Children     []ParagraphChild
+	Property     *ParagraphProperty
+	HasNumbering bool
+}
+
+type ParagraphChild interface{}
+
+func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		token, err := d.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		switch t := token.(type) {
+		case xml.StartElement:
+			//fmt.Printf("paragraph:\t<%s>\n", t.Name.Local)
+			// <w:r>.....</w:r>，交给 Run 处理
+			if t.Name.Local == "r" {
+				r := &Run{}
+				err := r.UnmarshalXML(d, token.(xml.StartElement))
+				if err != nil {
+					return err
+				}
+				//fmt.Println(*r)
+				p.Children = append(p.Children, r)
+			}
+			// <w:pPr>....<w:pPr>，交给 ParagraphProperty 处理
+			if t.Name.Local == "pPr" {
+				pRp := &ParagraphProperty{}
+				err := pRp.UnmarshalXML(d, token.(xml.StartElement))
+				if err != nil {
+					return err
+				}
+				p.Property = pRp
+			}
+		case xml.EndElement:
+			//fmt.Printf("paragraph:\t</%s>\n", t.Name.Local)
+			if t.Name.Local == "p" {
+				return nil
+			}
+		}
+	}
+	return nil
+}
+
+func (p Paragraph) String() string {
+	sb := strings.Builder{}
+	sb.WriteString("*************** paragraph *****************\n")
+	sb.WriteString(fmt.Sprintf("Property:\t%v", p.Property))
+	sb.WriteString(fmt.Sprintf("\nHasNumbering:\t%v", p.HasNumbering))
+	sb.WriteString("\nChildren:\n")
+	for index, child := range p.Children {
+		sb.WriteString(fmt.Sprintf("%d - %v\n", index, child))
+	}
+	sb.WriteString("\n")
+	return sb.String()
 }
