@@ -2,14 +2,9 @@ package document
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io"
 	"strings"
 )
-
-//type Paragraph struct {
-//	Children []Run `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main r"`
-//}
 
 type Paragraph struct {
 	Children     []ParagraphChild
@@ -17,7 +12,9 @@ type Paragraph struct {
 	HasNumbering bool
 }
 
-type ParagraphChild interface{}
+type ParagraphChild interface {
+	String() string
+}
 
 func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for {
@@ -60,14 +57,12 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-func (p Paragraph) String() string {
+func (p *Paragraph) String() string {
 	sb := strings.Builder{}
-	sb.WriteString("*************** paragraph *****************\n")
-	sb.WriteString(fmt.Sprintf("Property:\t%v", p.Property))
-	sb.WriteString(fmt.Sprintf("\nHasNumbering:\t%v", p.HasNumbering))
-	sb.WriteString("\nChildren:\n")
-	for index, child := range p.Children {
-		sb.WriteString(fmt.Sprintf("%d - %v\n", index, child))
+	//sb.WriteString(fmt.Sprintf("Property:\t%v", p.Property))
+	//sb.WriteString(fmt.Sprintf("\nHasNumbering:\t%v", p.HasNumbering))
+	for _, child := range p.Children {
+		sb.WriteString(child.String())
 	}
 	sb.WriteString("\n")
 	return sb.String()

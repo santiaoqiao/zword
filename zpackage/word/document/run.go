@@ -41,21 +41,6 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				if value, ok := helper.Unwrap(t, "type"); ok {
 					b.BreakType = value
 				}
-				//for _, attr := range t.Attr {
-				//	// <w:br w:type="textWrapping" />
-				//	if attr.Name.Local == "type" {
-				//		switch attr.Value {
-				//		case "page":
-				//			b.BreakType = break_type.Page
-				//		case "column":
-				//			b.BreakType = break_type.Column
-				//		case "textWrapping":
-				//			b.BreakType = break_type.TextWrapping
-				//		default:
-				//			b.BreakType = break_type.Unsupported
-				//		}
-				//	}
-				//}
 				r.Children = append(r.Children, b)
 			}
 		case xml.EndElement:
@@ -67,10 +52,11 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-func (r Run) String() string {
+func (r *Run) String() string {
 	sb := strings.Builder{}
-	for index, child := range r.Children {
-		sb.WriteString(fmt.Sprintf("R%d - %v\n", index, child))
+	// 将 <w:r>...</w:r>中的文本全部合并起来，一般一个run中只有一个text
+	for _, child := range r.Children {
+		sb.WriteString(fmt.Sprintf("%v", child))
 	}
 	return sb.String()
 }

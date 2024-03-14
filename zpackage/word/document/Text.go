@@ -1,10 +1,15 @@
 package document
 
+import "strings"
+
 type Text struct {
 	Text          string
 	PreserveSpace bool
 }
 
 func (t *Text) String() string {
-	return t.Text
+	if t.PreserveSpace {
+		return t.Text
+	}
+	return strings.TrimSpace(t.Text)
 }
