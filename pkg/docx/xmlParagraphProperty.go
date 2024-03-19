@@ -1,9 +1,9 @@
-package document
+package docx
 
 import (
 	"encoding/xml"
 	"io"
-	"santiaoqiao.com/zoffice/zpackage/helper"
+	"santiaoqiao.com/zoffice/pkg/helper"
 )
 
 type ParagraphProperty struct {

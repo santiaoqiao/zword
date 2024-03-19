@@ -1,17 +1,17 @@
-package document
+package docx
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zoffice/zpackage/helper"
+	"santiaoqiao.com/zoffice/pkg/helper"
 	"strings"
 )
 
 type RunChild interface{}
 
 type Run struct {
-	RunProperty *RunProperty
+	RunProperty *xmlRunProperty
 	Children    []RunChild
 }
 
@@ -44,7 +44,7 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 				r.Children = append(r.Children, b)
 			}
 			if t.Name.Local == "rPr" {
-				rPr := &RunProperty{}
+				rPr := &xmlRunProperty{}
 				err := rPr.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
 					return err

@@ -1,18 +1,16 @@
-package main
+package docx
 
 import (
 	"archive/zip"
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zoffice/zpackage"
-	"santiaoqiao.com/zoffice/zpackage/word"
 )
 
 type Docx struct {
-	ContentTypes *zpackage.ContentTypes
-	Document     *word.Document
-	Styles       *word.Styles
+	ContentTypes *ContentTypes
+	Document     *Document
+	//Styles       *Styles
 }
 
 func (docx *Docx) Read(filename string) error {
@@ -33,7 +31,7 @@ func (docx *Docx) Read(filename string) error {
 	// 🚩 读取 [Content_Types].xml，从中可以得到各个部分在什么地方
 	contentTypesXMLFile, ok := fileMap["[Content_Types].xml"]
 	if ok {
-		ptr := &zpackage.ContentTypes{}
+		ptr := &ContentTypes{}
 		err := unmarshalFile(contentTypesXMLFile, ptr)
 		if err != nil {
 			return err
@@ -44,7 +42,7 @@ func (docx *Docx) Read(filename string) error {
 	// 🚩 读取 主要的 document.main+xml 内容类型，获取所在路径，并解析它
 	documentXMLLFile, ok := fileMap["word/document.xml"]
 	if ok {
-		ptr := &word.Document{}
+		ptr := &Document{}
 		err := unmarshalFile(documentXMLLFile, ptr)
 		if err != nil {
 			return err

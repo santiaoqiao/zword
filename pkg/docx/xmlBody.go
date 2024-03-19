@@ -1,4 +1,4 @@
-package document
+package docx
 
 import (
 	"encoding/xml"
@@ -6,12 +6,15 @@ import (
 	"strings"
 )
 
-type TableCell struct {
-	Property TableCellProperty
+type Body struct {
 	Children []BodyChild
 }
 
-func (c *TableCell) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+type BodyChild interface {
+	String() string
+}
+
+func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for {
 		token, err := d.Token()
 		if err == io.EOF {
@@ -29,28 +32,19 @@ func (c *TableCell) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				if err != nil {
 					return err
 				}
-				c.Children = append(c.Children, p)
+				b.Children = append(b.Children, p)
 			}
-			// <w:tcPr>....<w:tcPr>，交给 TableCellProperty 处理
-			if t.Name.Local == "tcPr" {
-				tcPr := TableCellProperty{}
-				err := tcPr.UnmarshalXML(d, token.(xml.StartElement))
-				if err != nil {
-					return err
-				}
-				c.Property = tcPr
-			}
-			// 表格套表格
+			// <w:tbl>....<w:tbl>，交给 Table 处理
 			if t.Name.Local == "tbl" {
 				table := &Table{}
 				err := table.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
 					return err
 				}
-				c.Children = append(c.Children, table)
+				b.Children = append(b.Children, table)
 			}
 		case xml.EndElement:
-			if t.Name.Local == "tc" {
+			if t.Name.Local == "body" {
 				return nil
 			}
 		}
@@ -58,11 +52,11 @@ func (c *TableCell) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-func (c *TableCell) String() string {
+func (b *Body) String() string {
 	sb := strings.Builder{}
-	for _, child := range c.Children {
-		sb.WriteString(c.Property.String())
+	for _, child := range b.Children {
 		sb.WriteString(child.String())
+		sb.WriteString("\n")
 	}
 	return sb.String()
 }

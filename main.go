@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	docx2 "santiaoqiao.com/zoffice/pkg/docx"
 )
 
 func main() {
-	docx := &Docx{}
+	docx := &docx2.Docx{}
 	err := docx.Read("./tmp/aaa.docx")
 	if err != nil {
 		fmt.Println(err.Error())

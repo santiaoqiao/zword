@@ -1,4 +1,4 @@
-package document
+package docx
 
 import "strings"
 
