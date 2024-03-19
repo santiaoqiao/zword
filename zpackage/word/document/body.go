@@ -3,13 +3,16 @@ package document
 import (
 	"encoding/xml"
 	"io"
+	"strings"
 )
 
 type Body struct {
 	Children []BodyChild
 }
 
-type BodyChild interface{}
+type BodyChild interface {
+	String() string
+}
 
 func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for {
@@ -33,7 +36,12 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			}
 			// <w:tbl>....<w:tbl>，交给 Table 处理
 			if t.Name.Local == "tbl" {
-				// todo: table处理
+				table := &Table{}
+				err := table.UnmarshalXML(d, token.(xml.StartElement))
+				if err != nil {
+					return err
+				}
+				b.Children = append(b.Children, table)
 			}
 		case xml.EndElement:
 			if t.Name.Local == "body" {
@@ -42,4 +50,13 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 	}
 	return nil
+}
+
+func (b *Body) String() string {
+	sb := strings.Builder{}
+	for _, child := range b.Children {
+		sb.WriteString(child.String())
+		sb.WriteString("\n")
+	}
+	return sb.String()
 }

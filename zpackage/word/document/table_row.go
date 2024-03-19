@@ -3,6 +3,7 @@ package document
 import (
 	"encoding/xml"
 	"io"
+	"strings"
 )
 
 type TableRow struct {
@@ -36,4 +37,14 @@ func (r *TableRow) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 	}
 	return nil
+}
+
+func (r *TableRow) String() string {
+	sb := strings.Builder{}
+	for _, cell := range r.Cells {
+		sb.WriteString(cell.String())
+		sb.WriteString("\t")
+	}
+	//sb.WriteString("\n")
+	return sb.String()
 }

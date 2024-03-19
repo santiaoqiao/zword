@@ -12,7 +12,5 @@ func main() {
 		return
 	}
 
-	for _, p := range docx.Document.Body.Children {
-		fmt.Printf("%v", p)
-	}
+	fmt.Println(&docx.Document.Body)
 }

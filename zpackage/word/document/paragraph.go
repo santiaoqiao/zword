@@ -64,6 +64,5 @@ func (p *Paragraph) String() string {
 	for _, child := range p.Children {
 		sb.WriteString(child.String())
 	}
-	sb.WriteString("\n")
 	return sb.String()
 }
