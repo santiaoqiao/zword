@@ -2,8 +2,10 @@ package document
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io"
 	"santiaoqiao.com/zoffice/zpackage/helper"
+	"strings"
 )
 
 /*
@@ -44,7 +46,11 @@ type RunProperty struct {
 	// Vertically Raised or Lowered Text
 	Position int
 	// Run Fonts
-	RFonts RunFonts
+	RFonts   RunFonts
+	RStyleId string
+	// sz (Non-Complex Script Font Size)
+	Sz   int
+	SzCs int
 }
 
 func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -96,12 +102,15 @@ func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 					rPr.Kern = value
 				}
 			case "lang":
-				if val, ok := helper.Unwrap(t, "bidi"); ok {
-					rPr.Lang.Bidi = val
-				} else if val, ok = helper.Unwrap(t, "val"); ok {
-					rPr.Lang.Value = val
-				} else if val, ok = helper.Unwrap(t, "eastAsia"); ok {
-					rPr.Lang.EastAsian = val
+				for _, attr := range t.Attr {
+					switch attr.Name.Local {
+					case "bidi":
+						rPr.Lang.Bidi = attr.Value
+					case "val":
+						rPr.Lang.Value = attr.Value
+					case "eastAsia":
+						rPr.Lang.EastAsian = attr.Value
+					}
 				}
 			case "outline":
 				rPr.Outline = helper.UnwrapValToToggle(t)
@@ -111,6 +120,40 @@ func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 					return err
 				}
 				rPr.Position = val
+			case "rFonts":
+				if val, ok := helper.Unwrap(t, "hint"); ok {
+					rPr.RFonts.Hint = val
+				} else if val, ok = helper.Unwrap(t, "ascii"); ok {
+					rPr.RFonts.Ascii = val
+				} else if val, ok = helper.Unwrap(t, "hAnsi"); ok {
+					rPr.RFonts.HAnsi = val
+				} else if val, ok = helper.Unwrap(t, "eastAsia"); ok {
+					rPr.RFonts.EastAsia = val
+				} else if val, ok = helper.Unwrap(t, "cs"); ok {
+					rPr.RFonts.Cs = val
+				} else if val, ok = helper.Unwrap(t, "asciiTheme"); ok {
+					rPr.RFonts.AsciiTheme = val
+				} else if val, ok = helper.Unwrap(t, "hAnsiTheme"); ok {
+					rPr.RFonts.HAnsiTheme = val
+				} else if val, ok = helper.Unwrap(t, "eastAsiaTheme"); ok {
+					rPr.RFonts.EastAsiaTheme = val
+				}
+			case "rStyle":
+				if val, ok := helper.UnwrapVal(t); ok {
+					rPr.RStyleId = val
+				}
+			case "sz":
+				if val, _, err := helper.UnwrapValToInt(t); err != nil {
+					return err
+				} else {
+					rPr.Sz = val
+				}
+			case "szCs":
+				if val, _, err := helper.UnwrapValToInt(t); err != nil {
+					return err
+				} else {
+					rPr.SzCs = val
+				}
 			}
 		case xml.EndElement:
 			if t.Name.Local == "rPr" {
@@ -119,6 +162,12 @@ func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 	}
 	return nil
+}
+
+func (rPr *RunProperty) String() string {
+	sb := strings.Builder{}
+	sb.WriteString(fmt.Sprintf("%#v", rPr))
+	return sb.String()
 }
 
 type Color struct {
@@ -143,7 +192,7 @@ type RunFonts struct {
 	EastAsia string
 	// Complex Script
 	Cs            string
-	asciiTheme    string
-	hAnsiTheme    string
-	eastAsiaTheme string
+	AsciiTheme    string
+	HAnsiTheme    string
+	EastAsiaTheme string
 }

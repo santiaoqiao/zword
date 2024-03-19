@@ -61,6 +61,7 @@ func (c *TableCell) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 func (c *TableCell) String() string {
 	sb := strings.Builder{}
 	for _, child := range c.Children {
+		sb.WriteString(c.Property.String())
 		sb.WriteString(child.String())
 	}
 	return sb.String()

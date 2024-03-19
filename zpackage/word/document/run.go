@@ -11,12 +11,12 @@ import (
 type RunChild interface{}
 
 type Run struct {
-	//RunProperty interface{}
-	Children []RunChild
+	RunProperty *RunProperty
+	Children    []RunChild
 }
 
 // UnmarshalXML 解析<w:r>...</w:r>标签下的内容
-func (r *Run) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 	for {
 		token, err := d.Token()
 		if err == io.EOF {
@@ -43,6 +43,14 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				r.Children = append(r.Children, b)
 			}
+			if t.Name.Local == "rPr" {
+				rPr := &RunProperty{}
+				err := rPr.UnmarshalXML(d, token.(xml.StartElement))
+				if err != nil {
+					return err
+				}
+				r.RunProperty = rPr
+			}
 		case xml.EndElement:
 			if t.Name.Local == "r" {
 				return nil
@@ -56,6 +64,7 @@ func (r *Run) String() string {
 	sb := strings.Builder{}
 	// 将 <w:r>...</w:r>中的文本全部合并起来，一般一个run中只有一个text
 	for _, child := range r.Children {
+		sb.WriteString(r.RunProperty.String())
 		sb.WriteString(fmt.Sprintf("%v", child))
 	}
 	return sb.String()

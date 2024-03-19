@@ -54,3 +54,7 @@ func (c *TableCellProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 	return nil
 }
+
+func (c *TableCellProperty) String() string {
+	return "tableProperty"
+}
