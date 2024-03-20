@@ -25,9 +25,9 @@ func (c *TableCellProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		}
 		switch t := token.(type) {
 		case xml.StartElement:
-			// <w:tcW w:w="2840" w:type="dxa"/>
+			// <w:tcW w:w="2840" w:customtype="dxa"/>
 			if t.Name.Local == "tcW" {
-				if w, ok := helper.Unwrap(t, "w"); ok {
+				if w, ok := helper.UnmarshalSingleAttrWithOk(t, constSpaceW, "w"); ok {
 					wf, err := strconv.ParseFloat(w, 32)
 					if err != nil {
 						return err
@@ -37,7 +37,7 @@ func (c *TableCellProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 					c.Tcw = -1.0
 				}
 
-				if wt, ok := helper.Unwrap(t, "type"); ok {
+				if wt, ok := helper.UnmarshalSingleAttrWithOk(t, constSpaceW, "customtype"); ok {
 					c.TcwType = wt
 				}
 			}

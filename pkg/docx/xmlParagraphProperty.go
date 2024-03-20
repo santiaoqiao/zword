@@ -7,11 +7,11 @@ import (
 )
 
 type ParagraphProperty struct {
-	// Bidi 控制文字方向从右边向左
+	// bidi 控制文字方向从右边向左
 	/* Right to Left Paragraph Layout
 	This element specifies that this paragraph shall be displayed from right to left.*/
-	Bidi bool
-	// Jc -justification 段落排列方式
+	bidi bool
+	// jc -justification 段落排列方式
 	/* Paragraph Alignment
 	This element specifies the paragraph alignment which shall be applied to text in this paragraph.
 
@@ -27,12 +27,12 @@ type ParagraphProperty struct {
 	start	左对齐，Align To Leading Edge
 	thaiDistribute	泰语对齐方式
 	*/
-	Jc string
+	justify string
 }
 
 func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	// 初始化 pPr
-	pPr.Bidi = false
+	pPr.bidi = false
 	// 解析xml并给 pPr 赋值
 	for {
 		token, err := d.Token()
@@ -44,16 +44,14 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		}
 		switch t := token.(type) {
 		case xml.StartElement:
-			if t.Name.Local == "bidi" {
-				if val, ok := helper.UnwrapValToBool(t); ok {
-					pPr.Bidi = val
-				} else {
-					pPr.Bidi = true
-				}
-			}
-			if t.Name.Local == "jc" {
-				if val, ok := helper.UnwrapVal(t); ok {
-					pPr.Jc = val
+			switch t.Name.Space {
+			case constSpaceW:
+				switch t.Name.Local {
+				case constTagBidi:
+					// <w:bidi w:val="0"/>
+					pPr.bidi = helper.UnmarshalToggleValToBool(t, constSpaceW)
+				case constTagJustify:
+					pPr.justify = helper.UnmarshalSingleVal(t, constSpaceW)
 				}
 			}
 		case xml.EndElement:

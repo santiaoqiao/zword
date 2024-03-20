@@ -8,10 +8,12 @@ import (
 	"strings"
 )
 
-type RunChild interface{}
+type RunChild interface {
+	String() string
+}
 
 type Run struct {
-	RunProperty *xmlRunProperty
+	RunProperty *XmlRunProperty
 	Children    []RunChild
 }
 
@@ -38,14 +40,15 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 			// <w:br />
 			if t.Name.Local == "br" {
 				b := &Break{}
-				if value, ok := helper.Unwrap(t, "type"); ok {
+				if value, ok := helper.UnmarshalSingleAttrWithOk(t, constSpaceW, "customtype"); ok {
 					b.BreakType = value
 				}
 				r.Children = append(r.Children, b)
 			}
 			if t.Name.Local == "rPr" {
-				rPr := &xmlRunProperty{}
-				err := rPr.UnmarshalXML(d, token.(xml.StartElement))
+				rPr := &XmlRunProperty{}
+				err := d.DecodeElement(rPr, &t)
+				//err := rPr.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
 					return err
 				}
@@ -62,9 +65,9 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 
 func (r *Run) String() string {
 	sb := strings.Builder{}
-	// 将 <w:r>...</w:r>中的文本全部合并起来，一般一个run中只有一个text
+	// 每个run的属性
+	//sb.WriteString(fmt.Sprintf("%v\n", r.RunProperty))
 	for _, child := range r.Children {
-		sb.WriteString(r.RunProperty.String())
 		sb.WriteString(fmt.Sprintf("%v", child))
 	}
 	return sb.String()
