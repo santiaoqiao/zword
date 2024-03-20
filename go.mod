@@ -1,4 +1,4 @@
-module santiaoqiao.com/zoffice
+module santiaoqiao.com/zword
 
 go 1.22.0
 

@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zoffice/internal/docx/helper"
+	"santiaoqiao.com/zword/internal/docx/helper"
 	"strings"
 )
 

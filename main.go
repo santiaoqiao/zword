@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	docx2 "santiaoqiao.com/zoffice/internal/docx"
+	docx2 "santiaoqiao.com/zword/internal/docx"
 )
 
 func main() {
