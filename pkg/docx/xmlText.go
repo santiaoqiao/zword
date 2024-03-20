@@ -3,12 +3,12 @@ package docx
 import "strings"
 
 type Text struct {
-	Text          string
-	PreserveSpace bool
+	Text  string `xml:",chardata"`
+	Space string `xml:"space,attr,omitempty"`
 }
 
 func (t *Text) String() string {
-	if t.PreserveSpace {
+	if t.Space == "preserve" {
 		return t.Text
 	}
 	return strings.TrimSpace(t.Text)

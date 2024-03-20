@@ -1,4 +1,4 @@
-package customtype
+package helper
 
 import "math"
 

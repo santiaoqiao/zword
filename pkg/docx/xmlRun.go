@@ -32,7 +32,7 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 			// <w:t>hello</w:t>
 			if t.Name.Local == "t" {
 				text := &Text{}
-				if err := d.DecodeElement(&text.Text, &t); err != nil {
+				if err := d.DecodeElement(text, &t); err != nil {
 					return err
 				}
 				r.Children = append(r.Children, text)
@@ -40,7 +40,7 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 			// <w:br />
 			if t.Name.Local == "br" {
 				b := &Break{}
-				if value, ok := helper.UnmarshalSingleAttrWithOk(t, constSpaceW, "customtype"); ok {
+				if value, ok := helper.UnmarshalSingleAttrWithOk(t, cSpaceW, "customtype"); ok {
 					b.BreakType = value
 				}
 				r.Children = append(r.Children, b)

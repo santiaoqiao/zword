@@ -66,115 +66,115 @@ func (rPr *XmlRunProperty) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) erro
 		case xml.StartElement:
 			switch t.Name.Space {
 			//space为w的tag <w:....>
-			case constSpaceW:
+			case cSpaceW:
 				switch t.Name.Local {
-				case constTagB:
+				case cTagBold:
 					// <w:b w:val="false"/> | <w:b "/>
-					rPr.bold = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagBcs:
+					rPr.bold = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagBoldCs:
 					// <w:bCs w:val="false"/> | <w:bCs />
-					rPr.boldCs = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagColor:
+					rPr.boldCs = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagColor:
 					//<w:color w:themeColor="accent3"  w:val="FF0000"/>
 					for _, attr := range t.Attr {
 						switch {
-						case attr.Name.Space == constSpaceW && attr.Name.Local == constAttrVal:
+						case attr.Name.Space == cSpaceW && attr.Name.Local == cAttrVal:
 							rPr.color.value = attr.Value
-						case attr.Name.Space == constSpaceW && attr.Name.Local == constAttrThemeColor:
+						case attr.Name.Space == cSpaceW && attr.Name.Local == cAttrThemeColor:
 							rPr.color.theme = attr.Value
 						}
 					}
-				case constTagComplexScript:
+				case cTagCs:
 					//<w:cs/>
-					rPr.complexScript = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagDoubleStrikethrough:
+					rPr.complexScript = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagDStrike:
 					//<w:dstrike w:val="true"/>
-					rPr.doubleStrikethrough = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagEmphasisMark:
+					rPr.doubleStrikethrough = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagEmphasisMark:
 					//<w:em w:val="dot"/>
-					rPr.emphasisMark = helper.UnmarshalSingleAttr(t, constSpaceW, constAttrVal)
-				case constTagItalics:
+					rPr.emphasisMark = helper.UnmarshalSingleAttr(t, cSpaceW, cAttrVal)
+				case cTagItalics:
 					//	<w:i />
-					rPr.italics = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagItalicsComplexScript:
+					rPr.italics = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagItalicsCs:
 					// <w:iCs w:val="true"/>
-					rPr.italicsCs = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagImprint:
+					rPr.italicsCs = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagImprint:
 					// <w:imprint w:val="true"/>
-					rPr.imprint = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagFontKerning:
+					rPr.imprint = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagKern:
 					// <w:kern w:val="28" />
-					if val, err := helper.UnmarshalSingleAttrToInt(t, constSpaceW, constAttrVal); err != nil {
+					if val, err := helper.UnmarshalSingleAttrToInt(t, cSpaceW, cAttrVal); err != nil {
 						return err
 					} else {
 						rPr.fontKerning = val
 					}
-				case constTagLang:
+				case cTagLang:
 					// <w:lang w:val="fr-CA" w:bidi="he-IL" />
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case constSpaceW:
+						case cSpaceW:
 							switch attr.Name.Local {
-							case constAttrBidi:
+							case cAttrBidi:
 								rPr.lang.bidi = attr.Value
-							case constAttrVal:
+							case cAttrVal:
 								rPr.lang.value = attr.Value
-							case constAttrEastAsia:
+							case cAttrEastAsia:
 								rPr.lang.eastAsian = attr.Value
 							}
 						}
 					}
-				case constTagOutline:
+				case cTagOutline:
 					//<w:outline w:val="false"/>
-					rPr.outline = helper.UnmarshalToggleValToBool(t, constSpaceW)
-				case constTagPosition:
+					rPr.outline = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagPosition:
 					// <w:position w:val="24" />
-					if val, err := helper.UnmarshalSingleValToInt(t, constSpaceW); err != nil {
+					if val, err := helper.UnmarshalSingleValToInt(t, cSpaceW); err != nil {
 						return err
 					} else {
 						rPr.position = val
 					}
-				case constTagRFonts:
+				case cTagRFonts:
 					// <w:rFonts w:ascii="Courier New" w:cs="Times New Roman" />
 					// <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="黑体" w:eastAsia="黑体" w:cs="黑体"/>
 					// <w:rFonts w:hint="default" w:asciiTheme="minorAscii" w:hAnsiTheme="minorAscii" w:eastAsiaTheme="minorEastAsia"/>
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case constSpaceW:
+						case cSpaceW:
 							switch attr.Name.Local {
-							case constAttrHint:
+							case cAttrHint:
 								rPr.fonts.hint = attr.Value
-							case constAttrAscii:
+							case cAttrAscii:
 								rPr.fonts.ascii = attr.Value
-							case constAttrCs:
+							case cAttrCs:
 								rPr.fonts.cs = attr.Value
-							case constAttrEastAsia:
+							case cAttrEastAsia:
 								rPr.fonts.eastAsia = attr.Value
-							case constAttrHAnsi:
+							case cAttrHAnsi:
 								rPr.fonts.hAnsi = attr.Value
-							case constAttrAsciiTheme:
+							case cAttrAsciiTheme:
 								rPr.fonts.asciiTheme = attr.Value
-							case constAttrEastAsiaTheme:
+							case cAttrEastAsiaTheme:
 								rPr.fonts.eastAsiaTheme = attr.Value
-							case constAttrHAnsiTheme:
+							case cAttrHAnsiTheme:
 								rPr.fonts.hAnsiTheme = attr.Value
 							}
 						}
 
 					}
-				case constTagRStyle:
+				case cTagRStyle:
 					// <w:rStyle w:val="14"/>
-					rPr.styleId = helper.UnmarshalSingleVal(t, constSpaceW)
-				case constTagSize:
+					rPr.styleId = helper.UnmarshalSingleVal(t, cSpaceW)
+				case cTagSize:
 					// <w:sz w:val="27"/>
-					val, err := helper.UnmarshalSingleValToInt(t, constSpaceW)
+					val, err := helper.UnmarshalSingleValToInt(t, cSpaceW)
 					if err != nil {
 						return err
 					}
 					rPr.size = val
-				case constTagSizeCs:
+				case cTagSizeCs:
 					//<w:szCs w:val="20"/>
-					val, err := helper.UnmarshalSingleValToInt(t, constSpaceW)
+					val, err := helper.UnmarshalSingleValToInt(t, cSpaceW)
 					if err != nil {
 						return err
 					}

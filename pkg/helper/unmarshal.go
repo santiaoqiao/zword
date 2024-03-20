@@ -3,7 +3,6 @@ package helper
 import (
 	"encoding/xml"
 	"fmt"
-	"santiaoqiao.com/zoffice/pkg/customtype"
 	"strconv"
 )
 
@@ -60,7 +59,7 @@ func UnmarshalSingleAttrToInt(t xml.StartElement, space string, local string) (v
 			if attr.Name.Local == local {
 				i, err := strconv.ParseInt(attr.Value, 10, 0)
 				if err != nil {
-					return customtype.None, err
+					return None, err
 				}
 				return int(i), nil
 			}
@@ -76,7 +75,7 @@ func UnmarshalSingleAttrToInt(t xml.StartElement, space string, local string) (v
 			}
 		}
 	}
-	return customtype.None, fmt.Errorf("can't find attr [%s] in tag [%s]", local, t.Name.Local)
+	return None, fmt.Errorf("can't find attr [%s] in tag [%s]", local, t.Name.Local)
 }
 
 // UnmarshalSingleValToInt 获取tag中的唯一attr为val的属性值，并将其转换为int类型
