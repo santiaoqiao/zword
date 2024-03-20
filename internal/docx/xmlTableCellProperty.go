@@ -3,7 +3,7 @@ package docx
 import (
 	"encoding/xml"
 	"io"
-	"santiaoqiao.com/zoffice/pkg/helper"
+	"santiaoqiao.com/zoffice/internal/docx/helper"
 	"strconv"
 )
 
