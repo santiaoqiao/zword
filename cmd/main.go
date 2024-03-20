@@ -7,7 +7,7 @@ import (
 
 func main() {
 	docx := &docx2.Docx{}
-	err := docx.Read("./tmp/aaa.docx")
+	err := docx.Read("../tmp/aaa.docx")
 	if err != nil {
 		fmt.Println(err.Error())
 		return

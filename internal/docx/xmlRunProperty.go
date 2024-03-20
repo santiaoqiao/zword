@@ -9,13 +9,13 @@ import (
 )
 
 /*
-	XmlRunProperty Run的属性，与 XML 文档对应
+	RunProperty Run的属性，与 XML 文档对应
 
 This element specifies a set of run properties which shall be applied to the contents of the parent run after all
 style formatting has been applied to the text. These properties are defined as direct formatting, since they are
 directly applied to the run and supersede any formatting from styles
 */
-type XmlRunProperty struct {
+type RunProperty struct {
 	// 粗体（简单文字）
 	bold bool
 	// 粗体（复杂脚本）
@@ -53,7 +53,7 @@ type XmlRunProperty struct {
 }
 
 // UnmarshalXML 解析XML文档
-func (rPr *XmlRunProperty) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
+func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 	for {
 		token, err := d.Token()
 		if err == io.EOF {
@@ -192,10 +192,22 @@ func (rPr *XmlRunProperty) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) erro
 }
 
 // String 输出为字符串
-func (rPr *XmlRunProperty) String() string {
+func (rPr *RunProperty) String() string {
 	sb := strings.Builder{}
 	sb.WriteString(fmt.Sprintf("%#v", rPr))
 	return sb.String()
+}
+
+func (rPr *RunProperty) GetBold() bool {
+	return rPr.bold
+}
+
+func (rPr *RunProperty) GetFont() RunFonts {
+	return rPr.fonts
+}
+
+func (rPr *RunProperty) GetFontSize() int {
+	return rPr.size
 }
 
 // Color 字体颜色

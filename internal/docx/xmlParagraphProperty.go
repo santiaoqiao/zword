@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-// XmlParagraphProperty 段落属性
-type XmlParagraphProperty struct {
+// ParagraphProperty 段落属性
+type ParagraphProperty struct {
 	// bidi 控制文字方向从右边向左
 	bidi bool
 	// jc -justification 段落对齐方式
@@ -28,10 +28,10 @@ type XmlParagraphProperty struct {
 	// 段落缩进
 	indent Indent
 	// 段落内的run属性
-	rPr *XmlRunProperty
+	rPr *RunProperty
 }
 
-func (pPr *XmlParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	// 初始化 pPr
 	pPr.bidi = false
 	// 解析xml并给 pPr 赋值
@@ -113,7 +113,7 @@ func (pPr *XmlParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 						}
 					}
 				case cTagRPr:
-					rPr := &XmlRunProperty{}
+					rPr := &RunProperty{}
 					err := d.DecodeElement(rPr, &t)
 					if err != nil {
 						return err
@@ -130,7 +130,7 @@ func (pPr *XmlParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	return nil
 }
 
-func (pPr *XmlParagraphProperty) String() string {
+func (pPr *ParagraphProperty) String() string {
 	sb := strings.Builder{}
 	sb.WriteString(fmt.Sprintf("bidi: %v, justify:%v, indent:%v\n", pPr.bidi, pPr.justify, pPr.indent))
 	sb.WriteString(fmt.Sprintf("%v", pPr.rPr))

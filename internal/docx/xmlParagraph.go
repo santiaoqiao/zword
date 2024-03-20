@@ -8,7 +8,7 @@ import (
 
 type Paragraph struct {
 	Children     []ParagraphChild
-	Property     *XmlParagraphProperty
+	Property     *ParagraphProperty
 	HasNumbering bool
 }
 
@@ -38,9 +38,9 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				//fmt.Println(*r)
 				p.Children = append(p.Children, r)
 			}
-			// <w:pPr>....<w:pPr>，交给 XmlParagraphProperty 处理
+			// <w:pPr>....<w:pPr>，交给 ParagraphProperty 处理
 			if t.Name.Local == "pPr" {
-				pRp := &XmlParagraphProperty{}
+				pRp := &ParagraphProperty{}
 				err := pRp.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
 					return err

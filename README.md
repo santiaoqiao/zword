@@ -1,14 +1,2 @@
-# zoffice
-```go
-package main
+# zword
 
-import (
-"santiaoqiao.com/zoffice/zdocx"
-)
-
-func main()  {
-	var document *Docx = &zdocx.Document{}
-	document.Read("xxx.docx")
-	document
-}
-```

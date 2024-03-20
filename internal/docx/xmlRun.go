@@ -13,7 +13,7 @@ type RunChild interface {
 }
 
 type Run struct {
-	RunProperty *XmlRunProperty
+	RunProperty *RunProperty
 	Children    []RunChild
 }
 
@@ -46,7 +46,7 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 				r.Children = append(r.Children, b)
 			}
 			if t.Name.Local == "rPr" {
-				rPr := &XmlRunProperty{}
+				rPr := &RunProperty{}
 				err := d.DecodeElement(rPr, &t)
 				//err := rPr.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
