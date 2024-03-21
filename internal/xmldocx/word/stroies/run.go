@@ -1,10 +1,10 @@
-package docx
+package stroies
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/internal/docx/helper"
+	"santiaoqiao.com/zword/internal/xmldocx/helper"
 	"strings"
 )
 
@@ -48,7 +48,7 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 			if t.Name.Local == "rPr" {
 				rPr := &RunProperty{}
 				err := d.DecodeElement(rPr, &t)
-				//err := rPr.UnmarshalXML(d, token.(xml.StartElement))
+				//err := rPr.UnmarshalXML(d, token.(xmldocx.StartElement))
 				if err != nil {
 					return err
 				}

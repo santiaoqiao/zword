@@ -1,4 +1,4 @@
-package docx
+package stroies
 
 import (
 	"encoding/xml"
@@ -52,4 +52,8 @@ func (t *Table) String() string {
 		sb.WriteString("\n")
 	}
 	return sb.String()
+}
+
+func (t *Table) TypeName() string {
+	return "tbl"
 }

@@ -1,10 +1,10 @@
-package docx
+package stroies
 
 import "strings"
 
 type Text struct {
-	Text  string `xml:",chardata"`
-	Space string `xml:"space,attr,omitempty"`
+	Text  string `xmldocx:",chardata"`
+	Space string `xmldocx:"space,attr,omitempty"`
 }
 
 func (t *Text) String() string {
