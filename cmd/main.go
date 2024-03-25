@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"santiaoqiao.com/zword"
-	"santiaoqiao.com/zword/pkg/xml_parser/stroies"
+	"santiaoqiao.com/zword/pkg/docx"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	//fmt.Println(doc.Body)
 	for _, c := range doc.Body.Children {
 		if c.TypeName() == "p" {
-			p, ok := c.(*stroies.Paragraph)
+			p, ok := c.(*docx.Paragraph)
 			if ok {
 				fmt.Println(p.String() + "...")
 			}

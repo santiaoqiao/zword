@@ -1,4 +1,4 @@
-package properties
+package zword
 
 type SectionProperty struct {
 }

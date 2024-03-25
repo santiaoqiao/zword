@@ -1,11 +1,10 @@
-package properties
+package zword
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/pkg/xml_parser/helper"
-	"santiaoqiao.com/zword/pkg/xml_parser/stroies"
+	"santiaoqiao.com/zword/helper"
 	"strings"
 )
 
@@ -67,115 +66,115 @@ func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 		case xml.StartElement:
 			switch t.Name.Space {
 			//space为w的tag <w:....>
-			case stroies.cSpaceW:
+			case cSpaceW:
 				switch t.Name.Local {
-				case stroies.cTagBold:
+				case cTagBold:
 					// <w:b w:val="false"/> | <w:b "/>
-					rPr.Bold = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagBoldCs:
+					rPr.Bold = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagBoldCs:
 					// <w:bCs w:val="false"/> | <w:bCs />
-					rPr.BoldCs = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagColor:
+					rPr.BoldCs = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagColor:
 					//<w:Color w:themeColor="accent3"  w:val="FF0000"/>
 					for _, attr := range t.Attr {
 						switch {
-						case attr.Name.Space == stroies.cSpaceW && attr.Name.Local == stroies.cAttrVal:
+						case attr.Name.Space == cSpaceW && attr.Name.Local == cAttrVal:
 							rPr.Color.Value = attr.Value
-						case attr.Name.Space == stroies.cSpaceW && attr.Name.Local == stroies.cAttrThemeColor:
+						case attr.Name.Space == cSpaceW && attr.Name.Local == cAttrThemeColor:
 							rPr.Color.Theme = attr.Value
 						}
 					}
-				case stroies.cTagCs:
+				case cTagCs:
 					//<w:Cs/>
-					rPr.ComplexScript = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagDStrike:
+					rPr.ComplexScript = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagDStrike:
 					//<w:dstrike w:val="true"/>
-					rPr.DoubleStrikethrough = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagEmphasisMark:
+					rPr.DoubleStrikethrough = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagEmphasisMark:
 					//<w:em w:val="dot"/>
-					rPr.EmphasisMark = helper.UnmarshalSingleAttr(t, stroies.cSpaceW, stroies.cAttrVal)
-				case stroies.cTagItalics:
+					rPr.EmphasisMark = helper.UnmarshalSingleAttr(t, cSpaceW, cAttrVal)
+				case cTagItalics:
 					//	<w:i />
-					rPr.Italics = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagItalicsCs:
+					rPr.Italics = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagItalicsCs:
 					// <w:iCs w:val="true"/>
-					rPr.ItalicsCs = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagImprint:
+					rPr.ItalicsCs = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagImprint:
 					// <w:Imprint w:val="true"/>
-					rPr.Imprint = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagKern:
+					rPr.Imprint = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagKern:
 					// <w:kern w:val="28" />
-					if val, err := helper.UnmarshalSingleAttrToInt(t, stroies.cSpaceW, stroies.cAttrVal); err != nil {
+					if val, err := helper.UnmarshalSingleAttrToInt(t, cSpaceW, cAttrVal); err != nil {
 						return err
 					} else {
 						rPr.FontKerning = val
 					}
-				case stroies.cTagLang:
+				case cTagLang:
 					// <w:Lang w:val="fr-CA" w:Bidi="he-IL" />
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case stroies.cSpaceW:
+						case cSpaceW:
 							switch attr.Name.Local {
-							case stroies.cAttrBidi:
+							case cAttrBidi:
 								rPr.Lang.Bidi = attr.Value
-							case stroies.cAttrVal:
+							case cAttrVal:
 								rPr.Lang.Value = attr.Value
-							case stroies.cAttrEastAsia:
+							case cAttrEastAsia:
 								rPr.Lang.EastAsian = attr.Value
 							}
 						}
 					}
-				case stroies.cTagOutline:
+				case cTagOutline:
 					//<w:Outline w:val="false"/>
-					rPr.Outline = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
-				case stroies.cTagPosition:
+					rPr.Outline = helper.UnmarshalToggleValToBool(t, cSpaceW)
+				case cTagPosition:
 					// <w:Position w:val="24" />
-					if val, err := helper.UnmarshalSingleValToInt(t, stroies.cSpaceW); err != nil {
+					if val, err := helper.UnmarshalSingleValToInt(t, cSpaceW); err != nil {
 						return err
 					} else {
 						rPr.Position = val
 					}
-				case stroies.cTagRFonts:
+				case cTagRFonts:
 					// <w:rFonts w:Ascii="Courier New" w:Cs="Times New Roman" />
 					// <w:rFonts w:Hint="EastAsia" w:Ascii="黑体" w:HAnsi="黑体" w:EastAsia="黑体" w:Cs="黑体"/>
 					// <w:rFonts w:Hint="default" w:AsciiTheme="minorAscii" w:HAnsiTheme="minorAscii" w:EastAsiaTheme="minorEastAsia"/>
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case stroies.cSpaceW:
+						case cSpaceW:
 							switch attr.Name.Local {
-							case stroies.cAttrHint:
+							case cAttrHint:
 								rPr.Fonts.Hint = attr.Value
-							case stroies.cAttrAscii:
+							case cAttrAscii:
 								rPr.Fonts.Ascii = attr.Value
-							case stroies.cAttrCs:
+							case cAttrCs:
 								rPr.Fonts.Cs = attr.Value
-							case stroies.cAttrEastAsia:
+							case cAttrEastAsia:
 								rPr.Fonts.EastAsia = attr.Value
-							case stroies.cAttrHAnsi:
+							case cAttrHAnsi:
 								rPr.Fonts.HAnsi = attr.Value
-							case stroies.cAttrAsciiTheme:
+							case cAttrAsciiTheme:
 								rPr.Fonts.AsciiTheme = attr.Value
-							case stroies.cAttrEastAsiaTheme:
+							case cAttrEastAsiaTheme:
 								rPr.Fonts.EastAsiaTheme = attr.Value
-							case stroies.cAttrHAnsiTheme:
+							case cAttrHAnsiTheme:
 								rPr.Fonts.HAnsiTheme = attr.Value
 							}
 						}
 
 					}
-				case stroies.cTagRStyle:
+				case cTagRStyle:
 					// <w:rStyle w:val="14"/>
-					rPr.StyleId = helper.UnmarshalSingleVal(t, stroies.cSpaceW)
-				case stroies.cTagSize:
+					rPr.StyleId = helper.UnmarshalSingleVal(t, cSpaceW)
+				case cTagSize:
 					// <w:sz w:val="27"/>
-					val, err := helper.UnmarshalSingleValToInt(t, stroies.cSpaceW)
+					val, err := helper.UnmarshalSingleValToInt(t, cSpaceW)
 					if err != nil {
 						return err
 					}
 					rPr.Size = val
-				case stroies.cTagSizeCs:
+				case cTagSizeCs:
 					//<w:szCs w:val="20"/>
-					val, err := helper.UnmarshalSingleValToInt(t, stroies.cSpaceW)
+					val, err := helper.UnmarshalSingleValToInt(t, cSpaceW)
 					if err != nil {
 						return err
 					}

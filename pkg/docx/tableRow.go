@@ -1,4 +1,4 @@
-package stroies
+package zword
 
 import (
 	"encoding/xml"

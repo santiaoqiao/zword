@@ -1,15 +1,14 @@
-package stroies
+package zword
 
 import (
 	"encoding/xml"
 	"io"
-	"santiaoqiao.com/zword/pkg/xml_parser/properties"
 	"strings"
 )
 
 type Paragraph struct {
 	Children     []ParagraphChild
-	Property     *properties.ParagraphProperty
+	Property     *ParagraphProperty
 	HasNumbering bool
 }
 
@@ -41,7 +40,7 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			}
 			// <w:pPr>....<w:pPr>，交给 ParagraphProperty 处理
 			if t.Name.Local == "pPr" {
-				pRp := &properties.ParagraphProperty{}
+				pRp := &ParagraphProperty{}
 				err := pRp.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
 					return err

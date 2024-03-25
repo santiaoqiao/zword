@@ -1,11 +1,10 @@
-package stroies
+package zword
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/pkg/xml_parser/helper"
-	"santiaoqiao.com/zword/pkg/xml_parser/properties"
+	"santiaoqiao.com/zword/helper"
 	"strings"
 )
 
@@ -14,7 +13,7 @@ type RunChild interface {
 }
 
 type Run struct {
-	RunProperty *properties.RunProperty
+	RunProperty *RunProperty
 	Children    []RunChild
 }
 
@@ -47,9 +46,9 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 				r.Children = append(r.Children, b)
 			}
 			if t.Name.Local == "rPr" {
-				rPr := &properties.RunProperty{}
+				rPr := &RunProperty{}
 				err := d.DecodeElement(rPr, &t)
-				//err := rPr.UnmarshalXML(d, token.(xml_parser.StartElement))
+				//err := rPr.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
 					return err
 				}

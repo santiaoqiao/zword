@@ -1,4 +1,4 @@
-package properties
+package zword
 
 type ContentTypes struct {
 	DefaultItems []ContentTypesDefaultItem  `xml:"Default"`
@@ -15,7 +15,7 @@ type ContentTypesOverrideItem struct {
 	ContentType string `xml:"ContentType,attr"`
 }
 
-// CoreProperties is the `Application-Defined File Properties part` => docProps/core.xml_parser
+// CoreProperties is the `Application-Defined File Properties part` => docProps/core.xml
 type CoreProperties struct {
 	Created        string `xml:"http://purl.org/dc/terms/ created"`
 	Creator        string `xml:"http://purl.org/dc/elements/1.1/ creator"`
@@ -24,13 +24,13 @@ type CoreProperties struct {
 	Revision       int    `xml:"http://schemas.openxmlformats.org/pkg/2006/metadata/core-properties revision"`
 }
 
-// CustomProperties is the `Application-Defined File Properties part` => docProps/custom.xml_parser
+// CustomProperties is the `Application-Defined File Properties part` => docProps/custom.xml
 type CustomProperties struct {
 	Xmlns    string               `xml:"xmlns,attr"`
 	Children []CustomPropertyItem `xml:"property"`
 }
 
-// CustomPropertyItem is the item of the docProps/custom.xml_parser file
+// CustomPropertyItem is the item of the docProps/custom.xml file
 type CustomPropertyItem struct {
 	Fmtid  string `xml:"fmtid,attr"`
 	Pid    string `xml:"pid,attr"`
@@ -38,7 +38,7 @@ type CustomPropertyItem struct {
 	Lpwstr string `xml:"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes lpwstr"`
 }
 
-// ExtendedProperties is the `Application-Defined File Properties part` => docProps/app.xml_parser
+// ExtendedProperties is the `Application-Defined File Properties part` => docProps/app.xml
 type ExtendedProperties struct {
 	Template             string `xml:"Template"`
 	Pages                int    `xml:"Pages"`

@@ -1,4 +1,4 @@
-package stroies
+package zword
 
 // namespace
 const (
