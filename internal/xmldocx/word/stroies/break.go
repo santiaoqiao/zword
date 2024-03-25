@@ -1,4 +1,4 @@
-package docx
+package stroies
 
 type Break struct {
 	BreakType string

@@ -1,26 +1,24 @@
-package docx
+package zword
 
 import (
 	"archive/zip"
 	"encoding/xml"
 	"fmt"
 	"io"
+	"santiaoqiao.com/zword/internal/xmldocx/word"
 )
 
-type Docx struct {
-	ContentTypes *ContentTypes
-	Document     *Document
-	//Styles       *Styles
-}
-
-func (docx *Docx) Read(filename string) error {
+func OpenDocxFile(filename string) (*word.Document, error) {
+	doc := &word.Document{}
+	// 解压文件
 	r, err := zip.OpenReader(filename)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer func(r *zip.ReadCloser) {
 		_ = r.Close()
 	}(r)
+
 	// 获取目录中的所有文件，与路径相对应，保存在 fileMap 中
 	fileMap := make(map[string]*zip.File)
 	for _, f := range r.File {
@@ -28,29 +26,28 @@ func (docx *Docx) Read(filename string) error {
 			fileMap[f.Name] = f
 		}
 	}
-	// 🚩 读取 [Content_Types].xml，从中可以得到各个部分在什么地方
-	contentTypesXMLFile, ok := fileMap["[Content_Types].xml"]
+	// 🚩 读取 [Content_Types].xmldocx，从中可以得到各个部分在什么地方
+	contentTypesXMLFile, ok := fileMap["[Content_Types].xmldocx"]
 	if ok {
-		ptr := &ContentTypes{}
+		ptr := &xml.ContentTypes{}
 		err := unmarshalFile(contentTypesXMLFile, ptr)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		docx.ContentTypes = ptr
+		doc.ContentTypes = ptr
 	}
 
-	// 🚩 读取 主要的 document.main+xml 内容类型，获取所在路径，并解析它
-	documentXMLLFile, ok := fileMap["word/document.xml"]
+	// 🚩 读取 主要的 word.main+xmldocx 内容类型，获取所在路径，并解析它
+	documentXMLLFile, ok := fileMap["word/document.xmldocx"]
 	if ok {
-		ptr := &Document{}
+		ptr := &word.Document{}
 		err := unmarshalFile(documentXMLLFile, ptr)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		docx.Document = ptr
+		doc = ptr
 	}
-
-	return nil
+	return doc, nil
 }
 
 // 解析XML文件到指定的对象

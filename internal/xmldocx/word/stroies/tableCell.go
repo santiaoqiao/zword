@@ -1,4 +1,4 @@
-package docx
+package stroies
 
 import (
 	"encoding/xml"

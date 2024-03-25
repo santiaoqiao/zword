@@ -2,16 +2,24 @@ package main
 
 import (
 	"fmt"
-	docx2 "santiaoqiao.com/zword/internal/docx"
+	"santiaoqiao.com/zword"
+	"santiaoqiao.com/zword/internal/xmldocx/word/stroies"
 )
 
 func main() {
-	docx := &docx2.Docx{}
-	err := docx.Read("../tmp/aaa.docx")
+
+	doc, err := zword.OpenDocxFile("../tmp/aaa.xmldocx")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
-	fmt.Println(&docx.Document.Body)
+	//fmt.Println(doc.Body)
+	for _, c := range doc.Body.Children {
+		if c.TypeName() == "p" {
+			p, ok := c.(*stroies.Paragraph)
+			if ok {
+				fmt.Println(p.String() + "...")
+			}
+		}
+	}
 }

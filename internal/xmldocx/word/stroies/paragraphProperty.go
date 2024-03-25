@@ -1,10 +1,10 @@
-package docx
+package stroies
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/internal/docx/helper"
+	"santiaoqiao.com/zword/internal/xmldocx/helper"
 	"strings"
 )
 
@@ -29,6 +29,8 @@ type ParagraphProperty struct {
 	indent Indent
 	// 段落内的run属性
 	rPr *RunProperty
+	// 标记section
+	secPr *SectionProperty
 }
 
 func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -49,7 +51,7 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 			case cSpaceW:
 				switch t.Name.Local {
 				case cTagBidi:
-					// <w:bidi w:val="0"/>
+					// <w:Bidi w:val="0"/>
 					pPr.bidi = helper.UnmarshalToggleValToBool(t, cSpaceW)
 				case cTagJustify:
 					// <w:jc w:val="center"/>
@@ -132,7 +134,7 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 
 func (pPr *ParagraphProperty) String() string {
 	sb := strings.Builder{}
-	sb.WriteString(fmt.Sprintf("bidi: %v, justify:%v, indent:%v\n", pPr.bidi, pPr.justify, pPr.indent))
+	sb.WriteString(fmt.Sprintf("Bidi: %v, justify:%v, indent:%v\n", pPr.bidi, pPr.justify, pPr.indent))
 	sb.WriteString(fmt.Sprintf("%v", pPr.rPr))
 	return sb.String()
 }

@@ -1,9 +1,9 @@
-package docx
+package stroies
 
 import (
 	"encoding/xml"
 	"io"
-	"santiaoqiao.com/zword/internal/docx/helper"
+	"santiaoqiao.com/zword/internal/xmldocx/helper"
 	"strconv"
 )
 

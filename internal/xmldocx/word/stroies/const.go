@@ -1,4 +1,4 @@
-package docx
+package stroies
 
 // namespace
 const (
@@ -10,23 +10,23 @@ const (
 	// RunProperty tags
 	cTagBold         string = "b"
 	cTagBoldCs              = "bCs"
-	cTagColor               = "color"
-	cTagCs                  = "cs"
+	cTagColor               = "Color"
+	cTagCs                  = "Cs"
 	cTagDStrike             = "dstrike"
 	cTagEmphasisMark        = "em"
 	cTagItalics             = "i"
 	cTagItalicsCs           = "iCs"
-	cTagImprint             = "imprint"
+	cTagImprint             = "Imprint"
 	cTagKern                = "kern"
-	cTagLang                = "lang"
-	cTagOutline             = "outline"
-	cTagPosition            = "position"
+	cTagLang                = "Lang"
+	cTagOutline             = "Outline"
+	cTagPosition            = "Position"
 	cTagRFonts              = "rFonts"
 	cTagRStyle              = "rStyle"
 	cTagSize                = "sz"
 	cTagSizeCs              = "szCs"
 	// Paragraph tags
-	cTagBidi           = "bidi"
+	cTagBidi           = "Bidi"
 	cTagJustify        = "jc"
 	cTagInd            = "ind"
 	cTagEnd            = "end"
@@ -38,19 +38,23 @@ const (
 	cTagStart          = "start"
 	cTagStartChars     = "startChars"
 	cTagRPr            = "rPr"
+	// Body tags
+	cTagP      = "p"
+	cTagTbl    = "tbl"
+	cTagSectPr = "sectPr"
 )
 
 // attr
 const (
 	cAttrVal           = "val"
 	cAttrThemeColor    = "themeColor"
-	cAttrBidi          = "bidi"
-	cAttrEastAsia      = "eastAsia"
-	cAttrAscii         = "ascii"
-	cAttrCs            = "cs"
-	cAttrHAnsi         = "hAnsi"
-	cAttrHint          = "hint"
-	cAttrAsciiTheme    = "asciiTheme"
-	cAttrHAnsiTheme    = "hAnsiTheme"
-	cAttrEastAsiaTheme = "eastAsiaTheme"
+	cAttrBidi          = "Bidi"
+	cAttrEastAsia      = "EastAsia"
+	cAttrAscii         = "Ascii"
+	cAttrCs            = "Cs"
+	cAttrHAnsi         = "HAnsi"
+	cAttrHint          = "Hint"
+	cAttrAsciiTheme    = "AsciiTheme"
+	cAttrHAnsiTheme    = "HAnsiTheme"
+	cAttrEastAsiaTheme = "EastAsiaTheme"
 )

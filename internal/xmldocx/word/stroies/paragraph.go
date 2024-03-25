@@ -1,4 +1,4 @@
-package docx
+package stroies
 
 import (
 	"encoding/xml"
@@ -64,4 +64,8 @@ func (p *Paragraph) String() string {
 		sb.WriteString(child.String())
 	}
 	return sb.String()
+}
+
+func (p *Paragraph) TypeName() string {
+	return "p"
 }
