@@ -1,10 +1,10 @@
-package zword
+package docx
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/helper"
+	"santiaoqiao.com/zword/pkg/docx/helper"
 	"strings"
 )
 

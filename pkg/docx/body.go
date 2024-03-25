@@ -1,4 +1,4 @@
-package zword
+package docx
 
 import (
 	"encoding/xml"
@@ -9,12 +9,6 @@ import (
 // Body 对应主文档中的 <w:body>...</w:body>
 type Body struct {
 	Children []BodyChild
-}
-
-// BodyChild <body>中的元素：p、tbl、sectPr
-type BodyChild interface {
-	String() string
-	TypeName() string
 }
 
 // UnmarshalXML 解析<body>元素

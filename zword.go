@@ -5,12 +5,11 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/pkg/xml_parser"
-	"santiaoqiao.com/zword/pkg/xml_parser/properties"
+	"santiaoqiao.com/zword/pkg/docx"
 )
 
-func OpenDocxFile(filename string) (*xml_parser.Document, error) {
-	doc := &xml_parser.Document{}
+func OpenDocxFile(filename string) (*docx.Document, error) {
+	doc := &docx.Document{}
 	// 解压文件
 	r, err := zip.OpenReader(filename)
 	if err != nil {
@@ -27,10 +26,10 @@ func OpenDocxFile(filename string) (*xml_parser.Document, error) {
 			fileMap[f.Name] = f
 		}
 	}
-	// 🚩 读取 [Content_Types].xml_parser，从中可以得到各个部分在什么地方
+	// 🚩 读取 [Content_Types].xml，从中可以得到各个部分在什么地方
 	contentTypesXMLFile, ok := fileMap["[Content_Types].xml"]
 	if ok {
-		ptr := &properties.ContentTypes{}
+		ptr := &docx.ContentTypes{}
 		err := unmarshalFile(contentTypesXMLFile, ptr)
 		if err != nil {
 			return nil, err
@@ -38,10 +37,10 @@ func OpenDocxFile(filename string) (*xml_parser.Document, error) {
 		doc.ContentTypes = ptr
 	}
 
-	// 🚩 读取 主要的 word.main+xml_parser 内容类型，获取所在路径，并解析它
+	// 🚩 读取 主要的 word.main+xml 内容类型，获取所在路径，并解析它
 	documentXMLLFile, ok := fileMap["word/document.xml"]
 	if ok {
-		ptr := &xml_parser.Document{}
+		ptr := &docx.Document{}
 		err := unmarshalFile(documentXMLLFile, ptr)
 		if err != nil {
 			return nil, err

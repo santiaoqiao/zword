@@ -1,4 +1,4 @@
-package zword
+package docx
 
 type Break struct {
 	BreakType string

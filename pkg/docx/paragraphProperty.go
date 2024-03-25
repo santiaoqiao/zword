@@ -1,10 +1,10 @@
-package zword
+package docx
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	helper2 "santiaoqiao.com/zword/helper"
+	"santiaoqiao.com/zword/pkg/docx/helper"
 	"strings"
 )
 
@@ -52,10 +52,10 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 				switch t.Name.Local {
 				case cTagBidi:
 					// <w:Bidi w:val="0"/>
-					pPr.bidi = helper2.UnmarshalToggleValToBool(t, cSpaceW)
+					pPr.bidi = helper.UnmarshalToggleValToBool(t, cSpaceW)
 				case cTagJustify:
 					// <w:jc w:val="center"/>
-					pPr.justify = helper2.UnmarshalSingleVal(t, cSpaceW)
+					pPr.justify = helper.UnmarshalSingleVal(t, cSpaceW)
 				case cTagInd:
 					// <w:ind w:start="1440" w:end="1440" w:hanging="1080" />
 					// <w:ind w:left="425" w:leftChars="0" w:hanging="425" w:firstLineChars="0"/>
@@ -64,49 +64,49 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 						case cSpaceW:
 							switch attr.Name.Local {
 							case cTagEnd:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.end = val
 							case cTagEndChars:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.endChars = val
 							case cTagStart:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.start = val
 							case cTagStartChars:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.startChars = val
 							case cTagFirstLine:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.firstLine = val
 							case cTagFirstLineChars:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.firstLineChars = val
 							case cTagHanging:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.hanging = val
 							case cTagHangingChars:
-								val, err := helper2.Str2Int(attr.Value)
+								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}

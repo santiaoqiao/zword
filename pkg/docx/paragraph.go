@@ -1,4 +1,4 @@
-package zword
+package docx
 
 import (
 	"encoding/xml"
@@ -10,10 +10,6 @@ type Paragraph struct {
 	Children     []ParagraphChild
 	Property     *ParagraphProperty
 	HasNumbering bool
-}
-
-type ParagraphChild interface {
-	String() string
 }
 
 func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -66,6 +62,6 @@ func (p *Paragraph) String() string {
 	return sb.String()
 }
 
-func (p *Paragraph) TypeName() string {
-	return "p"
+func (p *Paragraph) TypeName() BodyChildType {
+	return BodyTypeParagraph
 }
