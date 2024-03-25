@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/internal/xmldocx/helper"
+	"santiaoqiao.com/zword/internal/xml_parser/helper"
 	"strings"
 )
 
@@ -48,7 +48,7 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 			if t.Name.Local == "rPr" {
 				rPr := &RunProperty{}
 				err := d.DecodeElement(rPr, &t)
-				//err := rPr.UnmarshalXML(d, token.(xmldocx.StartElement))
+				//err := rPr.UnmarshalXML(d, token.(xml_parser.StartElement))
 				if err != nil {
 					return err
 				}

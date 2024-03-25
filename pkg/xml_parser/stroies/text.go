@@ -3,8 +3,8 @@ package stroies
 import "strings"
 
 type Text struct {
-	Text  string `xmldocx:",chardata"`
-	Space string `xmldocx:"space,attr,omitempty"`
+	Text  string `xml_parser:",chardata"`
+	Space string `xml_parser:"space,attr,omitempty"`
 }
 
 func (t *Text) String() string {

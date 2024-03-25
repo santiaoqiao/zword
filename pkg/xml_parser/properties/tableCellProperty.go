@@ -3,7 +3,7 @@ package stroies
 import (
 	"encoding/xml"
 	"io"
-	"santiaoqiao.com/zword/internal/xmldocx/helper"
+	"santiaoqiao.com/zword/pkg/xml_parser/helper"
 	"strconv"
 )
 

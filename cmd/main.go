@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"santiaoqiao.com/zword"
-	"santiaoqiao.com/zword/internal/xmldocx/word/stroies"
+	"santiaoqiao.com/zword/pkg/xml_parser/stroies"
 )
 
 func main() {
 
-	doc, err := zword.OpenDocxFile("../tmp/aaa.xmldocx")
+	doc, err := zword.OpenDocxFile("../tmp/aaa.docx")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
