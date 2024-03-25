@@ -1,4 +1,4 @@
-package zword
+package docx
 
 // Property 文档属性
 type Property struct {

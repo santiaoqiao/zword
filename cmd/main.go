@@ -15,10 +15,10 @@ func main() {
 	}
 	//fmt.Println(doc.Body)
 	for _, c := range doc.Body.Children {
-		if c.TypeName() == "p" {
+		if c.TypeName() == docx.BodyTypeParagraph {
 			p, ok := c.(*docx.Paragraph)
 			if ok {
-				fmt.Println(p.String() + "...")
+				fmt.Println(p.String())
 			}
 		}
 	}
