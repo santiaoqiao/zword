@@ -1,4 +1,4 @@
-package xml_parser
+package properties
 
 type ContentTypes struct {
 	DefaultItems []ContentTypesDefaultItem  `xml:"Default"`

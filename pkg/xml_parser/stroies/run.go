@@ -4,7 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/internal/xml_parser/helper"
+	"santiaoqiao.com/zword/pkg/xml_parser/helper"
+	"santiaoqiao.com/zword/pkg/xml_parser/properties"
 	"strings"
 )
 
@@ -13,7 +14,7 @@ type RunChild interface {
 }
 
 type Run struct {
-	RunProperty *RunProperty
+	RunProperty *properties.RunProperty
 	Children    []RunChild
 }
 
@@ -46,7 +47,7 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 				r.Children = append(r.Children, b)
 			}
 			if t.Name.Local == "rPr" {
-				rPr := &RunProperty{}
+				rPr := &properties.RunProperty{}
 				err := d.DecodeElement(rPr, &t)
 				//err := rPr.UnmarshalXML(d, token.(xml_parser.StartElement))
 				if err != nil {

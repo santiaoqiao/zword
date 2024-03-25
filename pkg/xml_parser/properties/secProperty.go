@@ -1,4 +1,4 @@
-package stroies
+package properties
 
 type SectionProperty struct {
 }

@@ -3,6 +3,7 @@ package stroies
 import (
 	"encoding/xml"
 	"io"
+	"santiaoqiao.com/zword/pkg/xml_parser/properties"
 	"strings"
 )
 
@@ -50,7 +51,7 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					b.Children = append(b.Children, table)
 				case cTagSectPr:
 					// <w:sectPr>....</w:sectPr>
-					secPr := &SectionProperty{}
+					secPr := &properties.SectionProperty{}
 					err := d.DecodeElement(secPr, &t)
 					if err != nil {
 						return err

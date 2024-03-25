@@ -3,11 +3,12 @@ package stroies
 import (
 	"encoding/xml"
 	"io"
+	"santiaoqiao.com/zword/pkg/xml_parser/properties"
 	"strings"
 )
 
 type TableCell struct {
-	Property TableCellProperty
+	Property properties.TableCellProperty
 	Children []BodyChild
 }
 
@@ -33,7 +34,7 @@ func (c *TableCell) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			}
 			// <w:tcPr>....<w:tcPr>，交给 TableCellProperty 处理
 			if t.Name.Local == "tcPr" {
-				tcPr := TableCellProperty{}
+				tcPr := properties.TableCellProperty{}
 				err := tcPr.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
 					return err

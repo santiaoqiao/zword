@@ -5,11 +5,12 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/internal/xmldocx/word"
+	"santiaoqiao.com/zword/pkg/xml_parser"
+	"santiaoqiao.com/zword/pkg/xml_parser/properties"
 )
 
-func OpenDocxFile(filename string) (*word.Document, error) {
-	doc := &word.Document{}
+func OpenDocxFile(filename string) (*xml_parser.Document, error) {
+	doc := &xml_parser.Document{}
 	// 解压文件
 	r, err := zip.OpenReader(filename)
 	if err != nil {
@@ -26,10 +27,10 @@ func OpenDocxFile(filename string) (*word.Document, error) {
 			fileMap[f.Name] = f
 		}
 	}
-	// 🚩 读取 [Content_Types].xmldocx，从中可以得到各个部分在什么地方
-	contentTypesXMLFile, ok := fileMap["[Content_Types].xmldocx"]
+	// 🚩 读取 [Content_Types].xml_parser，从中可以得到各个部分在什么地方
+	contentTypesXMLFile, ok := fileMap["[Content_Types].xml"]
 	if ok {
-		ptr := &xml.ContentTypes{}
+		ptr := &properties.ContentTypes{}
 		err := unmarshalFile(contentTypesXMLFile, ptr)
 		if err != nil {
 			return nil, err
@@ -37,10 +38,10 @@ func OpenDocxFile(filename string) (*word.Document, error) {
 		doc.ContentTypes = ptr
 	}
 
-	// 🚩 读取 主要的 word.main+xmldocx 内容类型，获取所在路径，并解析它
-	documentXMLLFile, ok := fileMap["word/document.xmldocx"]
+	// 🚩 读取 主要的 word.main+xml_parser 内容类型，获取所在路径，并解析它
+	documentXMLLFile, ok := fileMap["word/document.xml"]
 	if ok {
-		ptr := &word.Document{}
+		ptr := &xml_parser.Document{}
 		err := unmarshalFile(documentXMLLFile, ptr)
 		if err != nil {
 			return nil, err

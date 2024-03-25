@@ -1,10 +1,11 @@
-package stroies
+package properties
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
 	"santiaoqiao.com/zword/pkg/xml_parser/helper"
+	"santiaoqiao.com/zword/pkg/xml_parser/stroies"
 	"strings"
 )
 
@@ -48,64 +49,64 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		switch t := token.(type) {
 		case xml.StartElement:
 			switch t.Name.Space {
-			case cSpaceW:
+			case stroies.cSpaceW:
 				switch t.Name.Local {
-				case cTagBidi:
+				case stroies.cTagBidi:
 					// <w:Bidi w:val="0"/>
-					pPr.bidi = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagJustify:
+					pPr.bidi = helper.UnmarshalToggleValToBool(t, stroies.cSpaceW)
+				case stroies.cTagJustify:
 					// <w:jc w:val="center"/>
-					pPr.justify = helper.UnmarshalSingleVal(t, cSpaceW)
-				case cTagInd:
+					pPr.justify = helper.UnmarshalSingleVal(t, stroies.cSpaceW)
+				case stroies.cTagInd:
 					// <w:ind w:start="1440" w:end="1440" w:hanging="1080" />
 					// <w:ind w:left="425" w:leftChars="0" w:hanging="425" w:firstLineChars="0"/>
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case cSpaceW:
+						case stroies.cSpaceW:
 							switch attr.Name.Local {
-							case cTagEnd:
+							case stroies.cTagEnd:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.end = val
-							case cTagEndChars:
+							case stroies.cTagEndChars:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.endChars = val
-							case cTagStart:
+							case stroies.cTagStart:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.start = val
-							case cTagStartChars:
+							case stroies.cTagStartChars:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.startChars = val
-							case cTagFirstLine:
+							case stroies.cTagFirstLine:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.firstLine = val
-							case cTagFirstLineChars:
+							case stroies.cTagFirstLineChars:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.firstLineChars = val
-							case cTagHanging:
+							case stroies.cTagHanging:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.hanging = val
-							case cTagHangingChars:
+							case stroies.cTagHangingChars:
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
@@ -114,7 +115,7 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 							}
 						}
 					}
-				case cTagRPr:
+				case stroies.cTagRPr:
 					rPr := &RunProperty{}
 					err := d.DecodeElement(rPr, &t)
 					if err != nil {
