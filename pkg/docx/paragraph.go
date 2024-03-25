@@ -25,7 +25,7 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		case xml.StartElement:
 			//fmt.Printf("paragraph:\t<%s>\n", t.Name.Local)
 			// <w:r>.....</w:r>，交给 Run 处理
-			if t.Name.Local == "r" {
+			if t.Name.Local == cTagR {
 				r := &Run{}
 				err := r.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
@@ -35,7 +35,7 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				p.Children = append(p.Children, r)
 			}
 			// <w:pPr>....<w:pPr>，交给 ParagraphProperty 处理
-			if t.Name.Local == "pPr" {
+			if t.Name.Local == cTagPP {
 				pRp := &ParagraphProperty{}
 				err := pRp.UnmarshalXML(d, token.(xml.StartElement))
 				if err != nil {
@@ -45,7 +45,7 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			}
 		case xml.EndElement:
 			//fmt.Printf("paragraph:\t</%s>\n", t.Name.Local)
-			if t.Name.Local == "p" {
+			if t.Name.Local == cTagP {
 				return nil
 			}
 		}

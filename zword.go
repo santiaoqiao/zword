@@ -8,8 +8,8 @@ import (
 	"santiaoqiao.com/zword/pkg/docx"
 )
 
-func OpenDocxFile(filename string) (*docx.Document, error) {
-	doc := &docx.Document{}
+func OpenDocxFile(filename string) (*docx.Docx, error) {
+	doc := &docx.Docx{}
 	// 解压文件
 	r, err := zip.OpenReader(filename)
 	if err != nil {
@@ -45,7 +45,19 @@ func OpenDocxFile(filename string) (*docx.Document, error) {
 		if err != nil {
 			return nil, err
 		}
-		doc = ptr
+		doc.Document = ptr
+	}
+
+	// 🚩 读取 主要的 styles+xml 内容类型，获取所在路径，并解析它
+	stylesXMLLFile, ok := fileMap["word/styles.xml"]
+	if ok {
+		ptr := &docx.Styles{}
+		err := unmarshalFile(stylesXMLLFile, ptr)
+		if err != nil {
+			return nil, err
+		}
+
+		doc.Styles = ptr
 	}
 	return doc, nil
 }

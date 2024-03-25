@@ -183,7 +183,7 @@ func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 			}
 
 		case xml.EndElement:
-			if t.Name.Local == "rPr" {
+			if t.Name.Local == cTagRPr {
 				return nil
 			}
 		}

@@ -1,7 +1,7 @@
 package docx
 
 // Document 代表了word整个文档
-type Document struct {
+type Docx struct {
 	PackageRelationship *PackageRelationshipItem
 	CoreProperties      *CoreProperties
 	CustomProperties    *CustomProperties
@@ -12,8 +12,13 @@ type Document struct {
 	//Header              *Header
 	//Numbering           *Numbering
 	//Settings            *Settings
-	//Styles              *Styles
+	Styles *Styles
 	//Footer              *Footer
+	Document *Document
+}
+
+// Document 代表了word整个文档
+type Document struct {
 	Body *Body `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main body"`
 }
 
@@ -92,10 +97,19 @@ const (
 	cTagStart          = "start"
 	cTagStartChars     = "startChars"
 	cTagRPr            = "rPr"
+	cTagOutlineLvl     = "outlineLvl"
+	cTagPP             = "pPr"
+	cTagR              = "r"
 	// Body tags
 	cTagP      = "p"
 	cTagTbl    = "tbl"
 	cTagSectPr = "sectPr"
+
+	// styles
+	cTagStyles      = "styles"
+	cTagdocDefaults = "docDefaults"
+	cTagrPrDefault  = "rPrDefault"
+	cTagpPrDefault  = "pPrDefault"
 )
 
 // xml 中的 attr 属性

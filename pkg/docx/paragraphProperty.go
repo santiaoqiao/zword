@@ -13,17 +13,6 @@ type ParagraphProperty struct {
 	// bidi 控制文字方向从右边向左
 	bidi bool
 	// jc -justification 段落对齐方式
-	/* both	两端对齐
-	center	居中
-	distribute	平均分配所有字符（分散对齐）
-	end	右对齐
-	highKashida	最宽 Kashida长度，用于类似阿拉伯语中，详见《ECMA-376-1:2016》 p1399
-	lowKashida	最窄 Kashida长度
-	mediumKashida	中等 Kashida长度
-	numTab	与列表选项卡对齐
-	start	左对齐，Align To Leading Edge
-	thaiDistribute	泰语对齐方式
-	*/
 	justify string
 	// 段落缩进
 	indent Indent
@@ -31,6 +20,8 @@ type ParagraphProperty struct {
 	rPr *RunProperty
 	// 标记section
 	secPr *SectionProperty
+	// 大纲级别
+	outLineLvl int // 0-9,9是无级别,没有此属性，默认为9普通文本
 }
 
 func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -111,6 +102,12 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 									return err
 								}
 								pPr.indent.hangingChars = val
+							case cTagOutlineLvl:
+								val, err := helper.Str2Int(attr.Value)
+								if err != nil {
+									return err
+								}
+								pPr.outLineLvl = val
 							}
 						}
 					}
@@ -158,4 +155,8 @@ type Indent struct {
 	start int
 	//指定应放置在本段开头的缩进,以字符单位的百分之一指定
 	startChars int
+}
+
+func (pPr *ParagraphProperty) Bidi() bool {
+	return pPr.bidi
 }
