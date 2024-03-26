@@ -22,6 +22,8 @@ type ParagraphProperty struct {
 	secPr *SectionProperty
 	// 大纲级别
 	outLineLvl int // 0-9,9是无级别,没有此属性，默认为9普通文本
+	// 样式
+	pStyleId string
 }
 
 func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -39,70 +41,70 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		switch t := token.(type) {
 		case xml.StartElement:
 			switch t.Name.Space {
-			case cSpaceW:
+			case helper.CSpaceW:
 				switch t.Name.Local {
-				case cTagBidi:
-					// <w:Bidi w:val="0"/>
-					pPr.bidi = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagJustify:
+				case "bidi":
+					// <w:bidi w:val="0"/>
+					pPr.bidi = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "jc":
 					// <w:jc w:val="center"/>
-					pPr.justify = helper.UnmarshalSingleVal(t, cSpaceW)
-				case cTagInd:
+					pPr.justify = helper.UnmarshalSingleVal(t, helper.CSpaceW)
+				case "ind":
 					// <w:ind w:start="1440" w:end="1440" w:hanging="1080" />
 					// <w:ind w:left="425" w:leftChars="0" w:hanging="425" w:firstLineChars="0"/>
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case cSpaceW:
+						case helper.CSpaceW:
 							switch attr.Name.Local {
-							case cTagEnd:
+							case "end":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.end = val
-							case cTagEndChars:
+							case "endChars":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.endChars = val
-							case cTagStart:
+							case "start":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.start = val
-							case cTagStartChars:
+							case "startChars":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.startChars = val
-							case cTagFirstLine:
+							case "firstLine":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.firstLine = val
-							case cTagFirstLineChars:
+							case "firstLineChars":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.firstLineChars = val
-							case cTagHanging:
+							case "hanging":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.hanging = val
-							case cTagHangingChars:
+							case "hangingChars":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
 								}
 								pPr.indent.hangingChars = val
-							case cTagOutlineLvl:
+							case "outlineLvl":
 								val, err := helper.Str2Int(attr.Value)
 								if err != nil {
 									return err
@@ -111,13 +113,16 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 							}
 						}
 					}
-				case cTagRPr:
+				case "rPr":
 					rPr := &RunProperty{}
 					err := d.DecodeElement(rPr, &t)
 					if err != nil {
 						return err
 					}
 					pPr.rPr = rPr
+				case "pStyle":
+					//<w:pStyle w:val="TestParagraphStyle" />
+					pPr.pStyleId = helper.UnmarshalSingleVal(t, helper.CSpaceW)
 				}
 			}
 		case xml.EndElement:

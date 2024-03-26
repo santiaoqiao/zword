@@ -9,8 +9,9 @@ import (
 )
 
 type Run struct {
-	RunProperty *RunProperty
-	Children    []RunChild
+	RunProperty     *RunProperty
+	Children        []RunChild
+	ParentParagraph *Paragraph
 }
 
 // UnmarshalXML 解析<w:r>...</w:r>标签下的内容
@@ -25,30 +26,29 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 		}
 		switch t := token.(type) {
 		case xml.StartElement:
-			// <w:t>hello</w:t>
-			if t.Name.Local == "t" {
-				text := &Text{}
-				if err := d.DecodeElement(text, &t); err != nil {
-					return err
+			switch t.Name.Space {
+			case helper.CSpaceW:
+				switch t.Name.Local {
+				case "t":
+					// <w:t>hello</w:t>
+					text := &Text{}
+					if err := d.DecodeElement(text, &t); err != nil {
+						return err
+					}
+					r.Children = append(r.Children, text)
+				case "br":
+					// <w:br />
+					b := &Break{}
+					b.Val = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+					r.Children = append(r.Children, b)
+				case "rPr":
+					rPr := &RunProperty{parentRun: r}
+					err := d.DecodeElement(rPr, &t)
+					if err != nil {
+						return err
+					}
+					r.RunProperty = rPr
 				}
-				r.Children = append(r.Children, text)
-			}
-			// <w:br />
-			if t.Name.Local == "br" {
-				b := &Break{}
-				if value, ok := helper.UnmarshalSingleAttrWithOk(t, cSpaceW, "customtype"); ok {
-					b.BreakType = value
-				}
-				r.Children = append(r.Children, b)
-			}
-			if t.Name.Local == "rPr" {
-				rPr := &RunProperty{}
-				err := d.DecodeElement(rPr, &t)
-				//err := rPr.UnmarshalXML(d, token.(xml.StartElement))
-				if err != nil {
-					return err
-				}
-				r.RunProperty = rPr
 			}
 		case xml.EndElement:
 			if t.Name.Local == "r" {

@@ -3,6 +3,7 @@ package docx
 import (
 	"encoding/xml"
 	"io"
+	"santiaoqiao.com/zword/pkg/docx/helper"
 	"strings"
 )
 
@@ -24,9 +25,9 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		switch t := token.(type) {
 		case xml.StartElement:
 			switch t.Name.Space {
-			case cSpaceW:
+			case helper.CSpaceW:
 				switch t.Name.Local {
-				case cTagP:
+				case "p":
 					//<w:p>.....</w:p>
 					p := &Paragraph{}
 					err := d.DecodeElement(p, &t)
@@ -34,7 +35,7 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 						return err
 					}
 					b.Children = append(b.Children, p)
-				case cTagTbl:
+				case "tbl":
 					// <w:tbl>....</w:tbl>
 					table := &Table{}
 					err := d.DecodeElement(table, &t)
@@ -42,7 +43,7 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 						return err
 					}
 					b.Children = append(b.Children, table)
-				case cTagSectPr:
+				case "sectPr":
 					// <w:sectPr>....</w:sectPr>
 					secPr := &SectionProperty{}
 					err := d.DecodeElement(secPr, &t)

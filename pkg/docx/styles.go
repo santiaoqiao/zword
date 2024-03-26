@@ -51,8 +51,8 @@ type StyleSheet struct {
 	PPr          *ParagraphProperty
 }
 
-func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	items := make(map[string]StyleSheet, 0)
+func (s *Styles) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
+	items := make(map[string]StyleSheet)
 	for {
 		token, err := d.Token()
 		if err == io.EOF {
@@ -64,7 +64,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		switch t := token.(type) {
 		case xml.StartElement:
 			switch t.Name.Space {
-			case cSpaceW:
+			case helper.CSpaceW:
 				switch t.Name.Local {
 				case "docDefaults":
 					// <w:docDefaults>...</w:docDefaults>
@@ -78,7 +78,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					switch t := token.(type) {
 					case xml.StartElement:
 						switch t.Name.Space {
-						case cSpaceW:
+						case helper.CSpaceW:
 							switch t.Name.Local {
 							case "rPrDefault":
 								// <w:rPrDefault>...</w:rPrDefault>
@@ -92,7 +92,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 								switch t := token.(type) {
 								case xml.StartElement:
 									switch t.Name.Space {
-									case cSpaceW:
+									case helper.CSpaceW:
 										switch t.Name.Local {
 										case "rPr":
 											// <w:rPr>...</w:rPr>
@@ -117,7 +117,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 								switch t := token.(type) {
 								case xml.StartElement:
 									switch t.Name.Space {
-									case cSpaceW:
+									case helper.CSpaceW:
 										switch t.Name.Local {
 										case "pPr":
 											// <w:pPr>...</w:pPr>
@@ -137,7 +137,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				case "latentStyles":
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case cSpaceW:
+						case helper.CSpaceW:
 							switch attr.Name.Local {
 							case "count":
 								val, err := helper.Str2Int(attr.Value)
@@ -191,14 +191,14 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 						switch t := token.(type) {
 						case xml.StartElement:
 							switch t.Name.Space {
-							case cSpaceW:
+							case helper.CSpaceW:
 								switch t.Name.Local {
 								case "lsdException":
 									// <w:lsdException>...
 									lsdException := LsdException{}
 									for _, attr := range t.Attr {
 										switch attr.Name.Space {
-										case cSpaceW:
+										case helper.CSpaceW:
 											// <w:lsdException w:qFormat="1" w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Normal"/>
 											switch attr.Name.Local {
 											case "unhideWhenUsed":
@@ -235,7 +235,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 							}
 						case xml.EndElement:
 							// ...</w:latentStyles>
-							if t.Name.Space == cSpaceW && t.Name.Local == "latentStyles" {
+							if t.Name.Space == helper.CSpaceW && t.Name.Local == "latentStyles" {
 								break latentStylesInnerLoop
 							}
 						}
@@ -246,7 +246,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					key := ""
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case cSpaceW:
+						case helper.CSpaceW:
 							switch attr.Name.Local {
 							case "type":
 								item.TypeFor = attr.Value
@@ -273,24 +273,24 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 						switch t := token.(type) {
 						case xml.StartElement:
 							switch t.Name.Space {
-							case cSpaceW:
+							case helper.CSpaceW:
 								switch t.Name.Local {
 								case "name":
-									item.Name = helper.UnmarshalSingleVal(t, cSpaceW)
+									item.Name = helper.UnmarshalSingleVal(t, helper.CSpaceW)
 								case "autoRedefine":
-									item.AutoRedefine = helper.UnmarshalToggleValToBool(t, cSpaceW)
+									item.AutoRedefine = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
 								case "qFormat":
-									item.QFormat = helper.UnmarshalToggleValToBool(t, cSpaceW)
+									item.QFormat = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
 								case "uiPriority":
-									val, err := helper.UnmarshalSingleValToInt(t, cSpaceW)
+									val, err := helper.UnmarshalSingleValToInt(t, helper.CSpaceW)
 									if err != nil {
 										return err
 									}
 									item.UiPriority = val
 								case "next":
-									item.Next = helper.UnmarshalSingleVal(t, cSpaceW)
+									item.Next = helper.UnmarshalSingleVal(t, helper.CSpaceW)
 								case "baseOn":
-									item.BasedOn = helper.UnmarshalSingleVal(t, cSpaceW)
+									item.BasedOn = helper.UnmarshalSingleVal(t, helper.CSpaceW)
 								case "rPr":
 									rPr := &RunProperty{}
 									err := d.DecodeElement(rPr, &t)
@@ -308,7 +308,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 								}
 							}
 						case xml.EndElement:
-							if t.Name.Space == cSpaceW && t.Name.Local == "style" {
+							if t.Name.Space == helper.CSpaceW && t.Name.Local == "style" {
 								if key != "" {
 									// add to style sheets
 									items[key] = item
@@ -320,7 +320,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 			}
 		case xml.EndElement:
-			if t.Name.Local == cTagStyles {
+			if t.Name.Local == "styles" {
 				// at the end
 				s.StyleSheets = items
 				return nil
