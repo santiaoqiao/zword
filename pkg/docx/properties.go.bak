@@ -1,0 +1,19 @@
+package docx
+
+type Properties struct {
+	styles *Styles
+}
+
+var DocProperties = &Properties{}
+
+func (p *Properties) Styles() *Styles {
+	if p.styles == nil {
+		// 读取styles文件
+
+	}
+	return p.styles
+}
+
+func (p *Properties) SetStyles(val *Styles) {
+	p.styles = val
+}

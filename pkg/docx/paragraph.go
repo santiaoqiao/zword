@@ -1,8 +1,9 @@
-package zword
+package docx
 
 import (
 	"encoding/xml"
 	"io"
+	"santiaoqiao.com/zword/pkg/docx/helper"
 	"strings"
 )
 
@@ -10,10 +11,6 @@ type Paragraph struct {
 	Children     []ParagraphChild
 	Property     *ParagraphProperty
 	HasNumbering bool
-}
-
-type ParagraphChild interface {
-	String() string
 }
 
 func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -27,29 +24,29 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		switch t := token.(type) {
 		case xml.StartElement:
-			//fmt.Printf("paragraph:\t<%s>\n", t.Name.Local)
-			// <w:r>.....</w:r>，交给 Run 处理
-			if t.Name.Local == "r" {
-				r := &Run{}
-				err := r.UnmarshalXML(d, token.(xml.StartElement))
-				if err != nil {
-					return err
+			switch t.Name.Space {
+			case helper.CSpaceW:
+				switch t.Name.Local {
+				case "r":
+					// <w:r>.....</w:r>
+					r := &Run{Parent: p}
+					err := r.UnmarshalXML(d, token.(xml.StartElement))
+					if err != nil {
+						return err
+					}
+					p.Children = append(p.Children, r)
+				case "pPr":
+					// <w:pPr>....<w:pPr>
+					pRp := &ParagraphProperty{}
+					err := pRp.UnmarshalXML(d, token.(xml.StartElement))
+					if err != nil {
+						return err
+					}
+					p.Property = pRp
 				}
-				//fmt.Println(*r)
-				p.Children = append(p.Children, r)
-			}
-			// <w:pPr>....<w:pPr>，交给 ParagraphProperty 处理
-			if t.Name.Local == "pPr" {
-				pRp := &ParagraphProperty{}
-				err := pRp.UnmarshalXML(d, token.(xml.StartElement))
-				if err != nil {
-					return err
-				}
-				p.Property = pRp
 			}
 		case xml.EndElement:
-			//fmt.Printf("paragraph:\t</%s>\n", t.Name.Local)
-			if t.Name.Local == "p" {
+			if t.Name.Space == helper.CSpaceW && t.Name.Local == "p" {
 				return nil
 			}
 		}
@@ -66,6 +63,6 @@ func (p *Paragraph) String() string {
 	return sb.String()
 }
 
-func (p *Paragraph) TypeName() string {
-	return "p"
+func (p *Paragraph) TypeName() BodyChildType {
+	return BodyTypeParagraph
 }
