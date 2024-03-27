@@ -21,3 +21,14 @@ type Docx struct {
 type Document struct {
 	Body *Body `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main body"`
 }
+
+// docFile 是一个全局变量
+var docFile = &Docx{}
+
+// getStyle 根据样式表获取一套样式属性
+func getStyle(id string) *StyleItem {
+	if s, ok := docFile.Styles.StyleSheets[id]; ok {
+		return &s
+	}
+	return nil
+}

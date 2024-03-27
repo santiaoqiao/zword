@@ -42,7 +42,15 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 					b.Val = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
 					r.Children = append(r.Children, b)
 				case "rPr":
-					rPr := &RunProperty{parentRun: r}
+					// 获取paragraph的样式，用于做最后的样式计算
+					var paragraphStyleRPr *RunProperty = nil
+					if r.ParentParagraph.Property.pStyleId != "" {
+						paragraphStyle := getStyle(r.ParentParagraph.Property.pStyleId)
+						if paragraphStyle != nil {
+							paragraphStyleRPr = paragraphStyle.RPr
+						}
+					}
+					rPr := &RunProperty{parentRun: r, paragraphStyleRPr: paragraphStyleRPr}
 					err := d.DecodeElement(rPr, &t)
 					if err != nil {
 						return err
@@ -67,4 +75,8 @@ func (r *Run) String() string {
 		sb.WriteString(fmt.Sprintf("%v", child))
 	}
 	return sb.String()
+}
+
+func (r *Run) TypeName() ParagraphChildType {
+	return ParagraphTypeRun
 }
