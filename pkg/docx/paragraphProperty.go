@@ -11,7 +11,7 @@ import (
 // ParagraphProperty 段落属性
 type ParagraphProperty struct {
 	// bidi 控制文字方向从右边向左
-	bidi bool
+	bidi *bool
 	// jc -justification 段落对齐方式
 	justify string
 	// 段落缩进
@@ -27,8 +27,6 @@ type ParagraphProperty struct {
 }
 
 func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	// 初始化 pPr
-	pPr.bidi = false
 	// 解析xml并给 pPr 赋值
 	for {
 		token, err := d.Token()
@@ -162,6 +160,6 @@ type Indent struct {
 	startChars int
 }
 
-func (pPr *ParagraphProperty) Bidi() bool {
+func (pPr *ParagraphProperty) Bidi() *bool {
 	return pPr.bidi
 }

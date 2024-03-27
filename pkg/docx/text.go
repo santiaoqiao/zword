@@ -13,3 +13,7 @@ func (t *Text) String() string {
 	}
 	return strings.TrimSpace(t.Text)
 }
+
+func (t *Text) TypeName() RunChildType {
+	return RunTypeText
+}
