@@ -30,7 +30,8 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				case "p":
 					//<w:p>.....</w:p>
 					p := &Paragraph{}
-					err := d.DecodeElement(p, &t)
+					//err := d.DecodeElement(p, &t)
+					err := p.UnmarshalXML(d, t)
 					if err != nil {
 						return err
 					}
@@ -38,7 +39,8 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				case "tbl":
 					// <w:tbl>....</w:tbl>
 					table := &Table{}
-					err := d.DecodeElement(table, &t)
+					//err := d.DecodeElement(table, &t)
+					err := table.UnmarshalXML(d, t)
 					if err != nil {
 						return err
 					}
@@ -47,10 +49,13 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					// <w:sectPr>....</w:sectPr>
 					secPr := &SectionProperty{}
 					err := d.DecodeElement(secPr, &t)
+					//err := secPr.UnmarshalXML(d, t)
 					if err != nil {
 						return err
 					}
 					b.Children = append(b.Children, secPr)
+				default:
+					break
 				}
 			}
 		case xml.EndElement:

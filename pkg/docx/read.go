@@ -53,7 +53,7 @@ func OpenDocxFile(filename string) (*Docx, error) {
 		ptr := &Document{}
 		err := unmarshalFile(documentXMLLFile, ptr)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("!!%s", err.Error())
 		}
 		docFile.Document = ptr
 	}

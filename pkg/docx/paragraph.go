@@ -30,7 +30,7 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				case "r":
 					// <w:r>.....</w:r>
 					r := &Run{ParentParagraph: p}
-					err := r.UnmarshalXML(d, token.(xml.StartElement))
+					err := r.UnmarshalXML(d, t)
 					if err != nil {
 						return err
 					}
@@ -38,13 +38,14 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				case "pPr":
 					// <w:pPr>....<w:pPr>
 					pRp := &ParagraphProperty{}
-					err := pRp.UnmarshalXML(d, token.(xml.StartElement))
+					err := pRp.UnmarshalXML(d, t)
 					if err != nil {
 						return err
 					}
 					p.Property = pRp
 				}
 			}
+
 		case xml.EndElement:
 			if t.Name.Space == helper.CSpaceW && t.Name.Local == "p" {
 				return nil

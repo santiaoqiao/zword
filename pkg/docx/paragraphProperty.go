@@ -113,7 +113,8 @@ func (pPr *ParagraphProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 					}
 				case "rPr":
 					rPr := &RunProperty{}
-					err := d.DecodeElement(rPr, &t)
+					//err := d.DecodeElement(rPr, &t)
+					err := rPr.UnmarshalXML(d, t)
 					if err != nil {
 						return err
 					}

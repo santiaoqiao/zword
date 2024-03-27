@@ -51,7 +51,8 @@ func (r *Run) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 						}
 					}
 					rPr := &RunProperty{parentRun: r, paragraphStyleRPr: paragraphStyleRPr}
-					err := d.DecodeElement(rPr, &t)
+					err := rPr.UnmarshalXML(d, t)
+					//err := d.DecodeElement(rPr, &t)
 					if err != nil {
 						return err
 					}

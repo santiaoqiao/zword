@@ -97,7 +97,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 										case "rPr":
 											// <w:rPr>...</w:rPr>
 											rPr := &RunProperty{}
-											err := d.DecodeElement(rPr, &t)
+											err := rPr.UnmarshalXML(d, t)
 											if err != nil {
 												return err
 											}
@@ -122,7 +122,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 										case "pPr":
 											// <w:pPr>...</w:pPr>
 											pPr := &ParagraphProperty{}
-											err := d.DecodeElement(pPr, &t)
+											err := pPr.UnmarshalXML(d, t)
 											if err != nil {
 												return err
 											}
@@ -293,14 +293,14 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 									item.BasedOn = helper.UnmarshalSingleVal(t, helper.CSpaceW)
 								case "rPr":
 									rPr := &RunProperty{}
-									err := d.DecodeElement(rPr, &t)
+									err := rPr.UnmarshalXML(d, t)
 									if err != nil {
 										return err
 									}
 									item.RPr = rPr
 								case "pPr":
 									pPr := &ParagraphProperty{}
-									err := d.DecodeElement(pPr, &t)
+									err := pPr.UnmarshalXML(d, t)
 									if err != nil {
 										return err
 									}
