@@ -1,4 +1,4 @@
-package zword
+package docx
 
 import "strings"
 

@@ -1,4 +1,4 @@
-package zword
+package docx
 
 type ContentTypes struct {
 	DefaultItems []ContentTypesDefaultItem  `xml:"Default"`

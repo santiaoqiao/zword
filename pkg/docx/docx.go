@@ -1,10 +1,7 @@
-package zword
+package docx
 
-// Property 文档属性
-type Property struct {
-}
-
-type Document struct {
+// Docx 代表了word整个文档
+type Docx struct {
 	PackageRelationship *PackageRelationshipItem
 	CoreProperties      *CoreProperties
 	CustomProperties    *CustomProperties
@@ -15,8 +12,12 @@ type Document struct {
 	//Header              *Header
 	//Numbering           *Numbering
 	//Settings            *Settings
-	//Styles              *Styles
+	Styles *Styles
 	//Footer              *Footer
-	Property *Property
-	Body     *Body `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main body"`
+	Document *Document
+}
+
+// Document 代表了word整个文档
+type Document struct {
+	Body *Body `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main body"`
 }

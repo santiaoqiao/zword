@@ -1,4 +1,4 @@
-package zword
+package docx
 
 import (
 	"encoding/xml"
@@ -54,6 +54,6 @@ func (t *Table) String() string {
 	return sb.String()
 }
 
-func (t *Table) TypeName() string {
-	return "tbl"
+func (p *Table) TypeName() BodyChildType {
+	return BodyTypeTable
 }

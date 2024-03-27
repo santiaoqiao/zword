@@ -1,23 +1,23 @@
-package zword
+package docx
 
 import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"santiaoqiao.com/zword/helper"
+	"santiaoqiao.com/zword/pkg/docx/helper"
 	"strings"
 )
 
 /*
 	RunProperty Run的属性，与 XML 文档对应
 
-This element specifies a set of run properties which shall be applied to the contents of the parent run after all
+This element specifies a set of run properties which shall be applied to the contents of the parentRun run after all
 style formatting has been applied to the text. These properties are defined as direct formatting, since they are
 directly applied to the run and supersede any formatting from styles
 */
 type RunProperty struct {
 	// 粗体（简单文字）
-	Bold bool
+	bold bool
 	// 粗体（复杂脚本）
 	BoldCs bool
 	// 字体颜色
@@ -50,6 +50,8 @@ type RunProperty struct {
 	Size int
 	// 字体大小（复杂脚本）
 	SizeCs int
+	// 指向样式表中的指针
+	parentRun *Run
 }
 
 // UnmarshalXML 解析XML文档
@@ -66,115 +68,115 @@ func (rPr *RunProperty) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 		case xml.StartElement:
 			switch t.Name.Space {
 			//space为w的tag <w:....>
-			case cSpaceW:
+			case helper.CSpaceW:
 				switch t.Name.Local {
-				case cTagBold:
+				case "b":
 					// <w:b w:val="false"/> | <w:b "/>
-					rPr.Bold = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagBoldCs:
+					rPr.bold = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "bCs":
 					// <w:bCs w:val="false"/> | <w:bCs />
-					rPr.BoldCs = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagColor:
-					//<w:Color w:themeColor="accent3"  w:val="FF0000"/>
+					rPr.BoldCs = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "color":
+					//<w:color w:themeColor="accent3"  w:val="FF0000"/>
 					for _, attr := range t.Attr {
 						switch {
-						case attr.Name.Space == cSpaceW && attr.Name.Local == cAttrVal:
+						case attr.Name.Space == helper.CSpaceW && attr.Name.Local == "val":
 							rPr.Color.Value = attr.Value
-						case attr.Name.Space == cSpaceW && attr.Name.Local == cAttrThemeColor:
+						case attr.Name.Space == helper.CSpaceW && attr.Name.Local == "themeColor":
 							rPr.Color.Theme = attr.Value
 						}
 					}
-				case cTagCs:
-					//<w:Cs/>
-					rPr.ComplexScript = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagDStrike:
+				case "cs":
+					//<w:cs/>
+					rPr.ComplexScript = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "dstrike":
 					//<w:dstrike w:val="true"/>
-					rPr.DoubleStrikethrough = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagEmphasisMark:
+					rPr.DoubleStrikethrough = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "em":
 					//<w:em w:val="dot"/>
-					rPr.EmphasisMark = helper.UnmarshalSingleAttr(t, cSpaceW, cAttrVal)
-				case cTagItalics:
+					rPr.EmphasisMark = helper.UnmarshalSingleVal(t, helper.CSpaceW)
+				case "i":
 					//	<w:i />
-					rPr.Italics = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagItalicsCs:
+					rPr.Italics = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "iCs":
 					// <w:iCs w:val="true"/>
-					rPr.ItalicsCs = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagImprint:
-					// <w:Imprint w:val="true"/>
-					rPr.Imprint = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagKern:
+					rPr.ItalicsCs = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "imprint":
+					// <w:imprint w:val="true"/>
+					rPr.Imprint = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "kern":
 					// <w:kern w:val="28" />
-					if val, err := helper.UnmarshalSingleAttrToInt(t, cSpaceW, cAttrVal); err != nil {
+					if val, err := helper.UnmarshalSingleValToInt(t, helper.CSpaceW); err != nil {
 						return err
 					} else {
 						rPr.FontKerning = val
 					}
-				case cTagLang:
-					// <w:Lang w:val="fr-CA" w:Bidi="he-IL" />
+				case "lang":
+					// <w:lang w:val="fr-CA" w:bidi="he-IL" />
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case cSpaceW:
+						case helper.CSpaceW:
 							switch attr.Name.Local {
-							case cAttrBidi:
+							case "bidi":
 								rPr.Lang.Bidi = attr.Value
-							case cAttrVal:
+							case "val":
 								rPr.Lang.Value = attr.Value
-							case cAttrEastAsia:
+							case "eastAsia":
 								rPr.Lang.EastAsian = attr.Value
 							}
 						}
 					}
-				case cTagOutline:
-					//<w:Outline w:val="false"/>
-					rPr.Outline = helper.UnmarshalToggleValToBool(t, cSpaceW)
-				case cTagPosition:
-					// <w:Position w:val="24" />
-					if val, err := helper.UnmarshalSingleValToInt(t, cSpaceW); err != nil {
+				case "outline":
+					//<w:outline w:val="false"/>
+					rPr.Outline = helper.UnmarshalToggleValToBool(t, helper.CSpaceW)
+				case "position":
+					// <w:position w:val="24" />
+					if val, err := helper.UnmarshalSingleValToInt(t, helper.CSpaceW); err != nil {
 						return err
 					} else {
 						rPr.Position = val
 					}
-				case cTagRFonts:
+				case "rFonts":
 					// <w:rFonts w:Ascii="Courier New" w:Cs="Times New Roman" />
 					// <w:rFonts w:Hint="EastAsia" w:Ascii="黑体" w:HAnsi="黑体" w:EastAsia="黑体" w:Cs="黑体"/>
 					// <w:rFonts w:Hint="default" w:AsciiTheme="minorAscii" w:HAnsiTheme="minorAscii" w:EastAsiaTheme="minorEastAsia"/>
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {
-						case cSpaceW:
+						case helper.CSpaceW:
 							switch attr.Name.Local {
-							case cAttrHint:
+							case "hint":
 								rPr.Fonts.Hint = attr.Value
-							case cAttrAscii:
+							case "ascii":
 								rPr.Fonts.Ascii = attr.Value
-							case cAttrCs:
+							case "cs":
 								rPr.Fonts.Cs = attr.Value
-							case cAttrEastAsia:
+							case "eastAsia":
 								rPr.Fonts.EastAsia = attr.Value
-							case cAttrHAnsi:
+							case "hAnsi":
 								rPr.Fonts.HAnsi = attr.Value
-							case cAttrAsciiTheme:
+							case "asciiTheme":
 								rPr.Fonts.AsciiTheme = attr.Value
-							case cAttrEastAsiaTheme:
+							case "eastAsiaTheme":
 								rPr.Fonts.EastAsiaTheme = attr.Value
-							case cAttrHAnsiTheme:
+							case "hAnsiTheme":
 								rPr.Fonts.HAnsiTheme = attr.Value
 							}
 						}
 
 					}
-				case cTagRStyle:
+				case "rStyle":
 					// <w:rStyle w:val="14"/>
-					rPr.StyleId = helper.UnmarshalSingleVal(t, cSpaceW)
-				case cTagSize:
+					rPr.StyleId = helper.UnmarshalSingleVal(t, helper.CSpaceW)
+				case "sz":
 					// <w:sz w:val="27"/>
-					val, err := helper.UnmarshalSingleValToInt(t, cSpaceW)
+					val, err := helper.UnmarshalSingleValToInt(t, helper.CSpaceW)
 					if err != nil {
 						return err
 					}
 					rPr.Size = val
-				case cTagSizeCs:
+				case "szCs":
 					//<w:szCs w:val="20"/>
-					val, err := helper.UnmarshalSingleValToInt(t, cSpaceW)
+					val, err := helper.UnmarshalSingleValToInt(t, helper.CSpaceW)
 					if err != nil {
 						return err
 					}
@@ -196,6 +198,16 @@ func (rPr *RunProperty) String() string {
 	sb := strings.Builder{}
 	sb.WriteString(fmt.Sprintf("%#v", rPr))
 	return sb.String()
+}
+
+func (rPr *RunProperty) Bold() bool {
+	//pStyle := rPr.parentRun.ParentParagraph.Property.pStyleId
+	if DocFile.Styles != nil && rPr.StyleId != "" {
+		//if s, ok := DocFile.Styles.StyleSheets[rPr.StyleId]; ok {
+		//
+		//}
+	}
+	return rPr.bold
 }
 
 // Color 字体颜色

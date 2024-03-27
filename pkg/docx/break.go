@@ -1,9 +1,12 @@
-package zword
+package docx
 
 type Break struct {
-	BreakType string
+	Val bool
 }
 
 func (b *Break) String() string {
-	return b.BreakType
+	if b.Val {
+		return "/n"
+	}
+	return ""
 }

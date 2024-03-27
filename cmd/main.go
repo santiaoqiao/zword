@@ -13,12 +13,11 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
-	//fmt.Println(doc.Body)
-	for _, c := range doc.Body.Children {
-		if c.TypeName() == "p" {
+	for _, c := range doc.Document.Body.Children {
+		if c.TypeName() == docx.BodyTypeParagraph {
 			p, ok := c.(*docx.Paragraph)
 			if ok {
-				fmt.Println(p.String() + "...")
+				fmt.Println(p.String())
 			}
 		}
 	}
