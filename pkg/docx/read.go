@@ -7,8 +7,6 @@ import (
 	"io"
 )
 
-var DocFile = &Docx{}
-
 func OpenDocxFile(filename string) (*Docx, error) {
 	// 解压文件
 	r, err := zip.OpenReader(filename)
@@ -34,22 +32,11 @@ func OpenDocxFile(filename string) (*Docx, error) {
 		if err != nil {
 			return nil, err
 		}
-		DocFile.ContentTypes = ptr
-	}
-
-	// 🚩 读取 主要的 DocFile.main+xml 内容类型，获取所在路径，并解析它
-	documentXMLLFile, ok := fileMap["DocFile/document.xml"]
-	if ok {
-		ptr := &Document{}
-		err := unmarshalFile(documentXMLLFile, ptr)
-		if err != nil {
-			return nil, err
-		}
-		DocFile.Document = ptr
+		docFile.ContentTypes = ptr
 	}
 
 	// 🚩 读取 主要的 styles+xml 内容类型，获取所在路径，并解析它
-	stylesXMLLFile, ok := fileMap["DocFile/styles.xml"]
+	stylesXMLLFile, ok := fileMap["word/styles.xml"]
 	if ok {
 		ptr := &Styles{}
 		err := unmarshalFile(stylesXMLLFile, ptr)
@@ -57,9 +44,20 @@ func OpenDocxFile(filename string) (*Docx, error) {
 			return nil, err
 		}
 		//DocProperties.SetStyles(ptr)
-		DocFile.Styles = ptr
+		docFile.Styles = ptr
 	}
-	return DocFile, nil
+
+	// 🚩 读取 主要的 docFile.main+xml 内容类型，获取所在路径，并解析它
+	documentXMLLFile, ok := fileMap["word/document.xml"]
+	if ok {
+		ptr := &Document{}
+		err := unmarshalFile(documentXMLLFile, ptr)
+		if err != nil {
+			return nil, err
+		}
+		docFile.Document = ptr
+	}
+	return docFile, nil
 }
 
 // 解析XML文件到指定的对象

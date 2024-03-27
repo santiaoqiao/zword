@@ -83,17 +83,24 @@ func UnmarshalSingleValToInt(t xml.StartElement, space string) (val int, err err
 	return UnmarshalSingleAttrToInt(t, space, "val")
 }
 
+var toggleTrue = true
+var toggleFalse = false
+
 // UnmarshalToggleValToBool 获取切换属性的值
-func UnmarshalToggleValToBool(t xml.StartElement, space string) (val bool) {
+func UnmarshalToggleValToBool(t xml.StartElement, space string) (val *bool) {
 	s, ok := UnmarshalSingleValWithOk(t, space)
 	if ok {
 		v, err := strconv.ParseBool(s)
 		if err != nil {
-			return false
+			return &toggleFalse
 		}
-		return v
+		if v {
+			return &toggleTrue
+		} else {
+			return &toggleFalse
+		}
 	} else {
 		// 没有val属性，在toggle中，直接为true
-		return true
+		return &toggleTrue
 	}
 }

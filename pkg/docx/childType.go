@@ -25,10 +25,12 @@ const (
 
 type RunChild interface {
 	String() string
+	TypeName() RunChildType
 }
 
 type ParagraphChild interface {
 	String() string
+	TypeName() ParagraphChildType
 }
 
 // BodyChild <body>中的元素：p、tbl、sectPr

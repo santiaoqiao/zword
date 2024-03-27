@@ -10,7 +10,7 @@ import (
 type Styles struct {
 	DocDefaults  DocDefaults
 	LatentStyles LatentStyles
-	StyleSheets  map[string]StyleSheet
+	StyleSheets  map[string]StyleItem
 }
 
 type DocDefaults struct {
@@ -37,13 +37,13 @@ type LsdException struct {
 	Name           string
 }
 
-type StyleSheet struct {
+type StyleItem struct {
 	TypeFor string
 	Default bool
-	//StyleId string  // it has putted into the key of the map
+	//rStyleId string  // it has putted into the key of the map
 	Name         string
-	QFormat      bool
-	AutoRedefine bool
+	QFormat      *bool
+	AutoRedefine *bool
 	UiPriority   int
 	BasedOn      string
 	Next         string
@@ -52,7 +52,7 @@ type StyleSheet struct {
 }
 
 func (s *Styles) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
-	items := make(map[string]StyleSheet)
+	items := make(map[string]StyleItem)
 	for {
 		token, err := d.Token()
 		if err == io.EOF {
@@ -242,7 +242,7 @@ func (s *Styles) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) error {
 					}
 					s.LatentStyles.LsdExceptions = lsdExceptions
 				case "style":
-					item := StyleSheet{}
+					item := StyleItem{}
 					key := ""
 					for _, attr := range t.Attr {
 						switch attr.Name.Space {

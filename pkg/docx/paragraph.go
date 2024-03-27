@@ -29,7 +29,7 @@ func (p *Paragraph) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				switch t.Name.Local {
 				case "r":
 					// <w:r>.....</w:r>
-					r := &Run{Parent: p}
+					r := &Run{ParentParagraph: p}
 					err := r.UnmarshalXML(d, token.(xml.StartElement))
 					if err != nil {
 						return err
