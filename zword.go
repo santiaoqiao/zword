@@ -1,7 +1,7 @@
 package zword
 
 import (
-	"santiaoqiao.com/zword/pkg/docx"
+	"github.com/santiaoqiao/zword/pkg/docx"
 )
 
 func OpenDocxFile(filename string) (*docx.Docx, error) {

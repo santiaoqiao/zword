@@ -2,8 +2,8 @@ package docx
 
 import (
 	"encoding/xml"
+	"github.com/santiaoqiao/zword/pkg/docx/helper"
 	"io"
-	"santiaoqiao.com/zword/pkg/docx/helper"
 	"strconv"
 )
 

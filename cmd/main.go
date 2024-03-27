@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"santiaoqiao.com/zword"
-	"santiaoqiao.com/zword/pkg/docx"
+	"github.com/santiaoqiao/zword"
+	"github.com/santiaoqiao/zword/pkg/docx"
 )
 
 func main() {

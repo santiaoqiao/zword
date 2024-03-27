@@ -1,4 +1,4 @@
-module santiaoqiao.com/zword
+module github.com/santiaoqiao/zword
 
 go 1.22.0
 
