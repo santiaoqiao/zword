@@ -566,7 +566,15 @@ func (rPr *RunProperty) SizeCs() *int {
 func (rPr *RunProperty) Fonts() *RunFonts {
 	// 1 先看 Direct formatting
 	if rPr.fonts != nil {
-		return rPr.fonts
+		// 只有hint的情况
+		if rPr.fonts.Hint != "" &&
+			rPr.fonts.EastAsia == "" &&
+			rPr.fonts.Cs == "" &&
+			rPr.fonts.Ascii == "" &&
+			rPr.fonts.HAnsi == "" {
+		} else {
+			return rPr.fonts
+		}
 	}
 	// 2 Character styles
 	if rPr.runStyleRPr != nil && rPr.runStyleRPr.fonts != nil {

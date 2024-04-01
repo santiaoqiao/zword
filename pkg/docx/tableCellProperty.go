@@ -56,5 +56,5 @@ func (c *TableCellProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 }
 
 func (c *TableCellProperty) String() string {
-	return "tableProperty"
+	return ""
 }
